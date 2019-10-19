@@ -39,7 +39,7 @@ app.get('/', function (req, res) {
   res.sendFile( __dirname + "/html/index.html" );
 })
 
-MongoClient.connect('mongodb://localhost:27017',function(err,client){
+MongoClient.connect('mongodb://localhost:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
   if (err){
     throw err;
   }
