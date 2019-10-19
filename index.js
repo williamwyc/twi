@@ -6,7 +6,11 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 var path = require('path');
 var MongoClient = require('mongodb').MongoClient;
 var cookieSession = require('cookie-session');
-
+app.use(express.static(__dirname));
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 app.use(cookieSession({
     name: 'session',
     keys: ['amiya'],
