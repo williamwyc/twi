@@ -15,7 +15,19 @@ router.post('/',(req,res)=>{
 function addItem(content,childType){
     var success=false;
     //DB operation:Post a new item
-    
+    /**
+     * item format:
+     *  item: {
+            id: item ID string
+            username: username who sent item
+            property: {
+            likes: number	
+            }
+            retweeted: number
+            content: body of item, (original content if this item is a retweet)
+            timestamp: timestamp, represented as Unix time
+        }
+     */
     if(success){
         //Fill in the id with added item's id.
         res.json({status:"OK",id:""});
