@@ -18,7 +18,9 @@ router.post('/',(req,res)=>{
             error:"Login Frist"
         });
     }
-    addItem(content,childType,user, db, res);
+    else{
+        addItem(content,childType,user, db, res);
+    }
 });
 
 function addItem(content,childType,user, db, res){
