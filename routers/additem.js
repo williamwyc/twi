@@ -14,7 +14,7 @@ router.post('/',(req,res)=>{
     var db = req.app.locals.db
     if(user == null){
         res.json({
-            status:"ERROR",
+            status:"error",
             error:"Login Frist"
         });
     }
@@ -24,7 +24,6 @@ router.post('/',(req,res)=>{
 });
 
 function addItem(content,childType,user, db, res){
-    var success=false
     var timestamp = Date.now()/1000
     var id = user + timestamp
     var item = {
@@ -37,13 +36,18 @@ function addItem(content,childType,user, db, res){
         content: content,
         timestamp: timestamp
     }
-    var err = null
     db.collection("items").insertOne(item,function(err, result){
         if(err){
-            err = err
+            res.json({
+                status:"error",
+                error: err
+            });
         }
         else{
-            success = true
+            res.json({
+                status:"OK",
+                id: id
+            });
         }
     })
     //DB operation:Post a new item
@@ -60,19 +64,6 @@ function addItem(content,childType,user, db, res){
             timestamp: timestamp, represented as Unix time
         }
      */
-    if(success){
-        //Fill in the id with added item's id.
-        res.json({
-            status:"OK",
-            id: id
-        });
-    }else{
-        //Fill in the error message if error occurs.
-        res.json({
-            status:"error",
-            error: err
-        });
-    }
 }
 
 module.exports = router;

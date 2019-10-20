@@ -14,35 +14,27 @@ router.get('/:id',(req,res)=>{
 });
 
 function getItem(id,db,res){
-    var success=false;
-    var item;
-    var err;
     //DB operation:Get contents of a single <id> item
     db.collection("items").find({'id': id}).toArray(function(err, result){
         if(err){
-            err = err;
+            res.json({
+                status:"error",
+                error:err
+            });
         }
         else if(result.length<=0){
-            err = "No such tweet"
+            res.json({
+                status:"error",
+                error:"No such tweet"
+            });
         }
         else{
-            item = result[0]
-            success = true
+            res.json({
+                status:"OK",
+                item:result[0]
+            });
         }
     })
-    if(success){
-        //Fill in the item with item found
-        res.json({
-            status:"OK",
-            item:item
-        });
-    }else{
-        //Fill in the error message if error occurs.
-        res.json({
-            status:"error",
-            error:err
-        });
-    }
 }
 
 
