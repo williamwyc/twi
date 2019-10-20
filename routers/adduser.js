@@ -21,12 +21,14 @@ router.post('/',jsonParser,function(req,res){
                 'status': "error",
                 'error': err
             }
+            res.json(json)
         }
         else if(result.length>=1){
             json = {
                 'status': "error",
                 'error': "Duplicate username or email"
             }
+            res.json(json)
         }
         else{
             var transporter = nodemailer.createTransport({
@@ -48,6 +50,7 @@ router.post('/',jsonParser,function(req,res){
                         'status': "error",
                         'error': err
                     }
+                    res.json(json)
                 } else {
                     console.log('Email sent: ' + info.response);
                     db.collection("users").insertOne(data, function(err, result){
@@ -56,14 +59,16 @@ router.post('/',jsonParser,function(req,res){
                                 'status': "error",
                                 'error': err
                             }
+                            res.json(json)
+                        }
+                        else{
+                            res.json(json)
                         }
                     })
                 }
             });
         }
     })
-    console.log(json)
-    res.json(json)
 })
 
 module.exports = router;
