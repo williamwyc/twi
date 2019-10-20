@@ -24,7 +24,7 @@ router.post('/',(req,res)=>{
 });
 
 function addItem(content,childType,user, db, res){
-    var timestamp = Date.now()/1000
+    var timestamp = Date.now()
     var id = user + timestamp
     var item = {
         id: id,
