@@ -8,7 +8,7 @@ var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 
 router.get('/:id',(req,res)=>{
-    var id=req.param.id;
+    var id=req.param('id)');
     console.log("Get item:")
     console.log(id)
     var db = req.app.locals.db
