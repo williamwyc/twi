@@ -9,6 +9,8 @@ var nodemailer = require('nodemailer');
 
 router.post('/',jsonParser,function(req,res){
     data = req.body // username: string, email: string, password: string
+    console.log("Add User: ")
+    console.log(data)
     db = req.app.locals.db //access db
     json = {'status': "OK"}
     data.key = Math.floor((Math.random() * 899999) + 100000);
@@ -17,6 +19,7 @@ router.post('/',jsonParser,function(req,res){
         if(err){
             json.status = "error"
             json.error = err
+            console.log(err)
         }
         else if(result.length>=1){
             json.status = "error"
@@ -40,16 +43,18 @@ router.post('/',jsonParser,function(req,res){
                 if (error) {
                     json.status = "error"
                     json.error = err
+                    console.log(err)
                 } else {
-                  console.log('Email sent: ' + info.response);
+                    console.log('Email sent: ' + info.response);
+                    db.collection("users").insertOne(data, function(err, result){
+                        if(err){
+                            json.status = "error"
+                            json.error = err
+                            console.log(err)
+                        }
+                    })
                 }
             });
-            db.collection("users").insertOne(data, function(err, result){
-                if(err){
-                    json.status = "error"
-                    json.error = err
-                }
-            })
         }
     })
     res.json(json)
