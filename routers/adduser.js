@@ -17,12 +17,10 @@ router.post('/',jsonParser,function(req,res){
         if(err){
             json.status = "error"
             json.error = err
-            res.json(json)
         }
         else if(result.length>=1){
             json.status = "error"
             json.error = "Duplicate username or email"
-            res.json(json)
         }
         else{
             var transporter = nodemailer.createTransport({
@@ -38,11 +36,10 @@ router.post('/',jsonParser,function(req,res){
                 subject: 'Twitter Clone: Verify your account',
                 text: "Validation key: <" + data.key + ">",
             }
-            transporter.sendMail(mailOptions, function(error, info){
+            transporter.sendMail(mailOptions, function(err, info){
                 if (error) {
                     json.status = "error"
                     json.error = err
-                    res.json(json)
                 } else {
                   console.log('Email sent: ' + info.response);
                 }
@@ -51,14 +48,11 @@ router.post('/',jsonParser,function(req,res){
                 if(err){
                     json.status = "error"
                     json.error = err
-                    res.json(json)
-                }
-                else{
-                    res.json(json)
                 }
             })
         }
     })
+    res.json(json)
 })
 
 module.exports = router;

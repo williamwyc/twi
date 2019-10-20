@@ -15,12 +15,10 @@ router.post('/',jsonParser,function(req,res){
         if(err){
             json.status = "error"
             json.error = err
-            res.json(json)
         }
         else if(result.length<=0){
             json.status = "error"
             json.error = "No such user"
-            res.json(json)
         }
         else{
             user = result[0]
@@ -30,15 +28,14 @@ router.post('/',jsonParser,function(req,res){
                         'verify': true
                     }
                 })
-                res.json(json)
             }
             else{
                 json.status = "error"
                 json.error = "Wrong key"
-                res.json(json)
             }
         }
     })
+    res.json(json)
 })
 
 module.exports = router;
