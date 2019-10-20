@@ -12,7 +12,6 @@ router.post('/',jsonParser,function(req,res){
     console.log("Add User: ")
     console.log(data)
     db = req.app.locals.db //access db
-    json = {'status': "OK"}
     data.key = Math.floor((Math.random() * 899999) + 100000);
     data.verify = false
     db.collection("users").find({$or:[{'username': data.username},{'email': data.email}]}).toArray(function(err, result){
@@ -62,6 +61,7 @@ router.post('/',jsonParser,function(req,res){
                             res.json(json)
                         }
                         else{
+                            json = {'status': "OK"}
                             res.json(json)
                         }
                     })

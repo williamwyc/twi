@@ -10,15 +10,20 @@ var nodemailer = require('nodemailer');
 router.post('/',jsonParser,function(req,res){
     data = req.body //email: string, key: string
     var db = req.app.locals.db
-    json = {'status': "OK"}
     db.collection("users").find({'email': data.email}).toArray(function(err,result){
         if(err){
-            json.status = "error"
-            json.error = err
+            json = {
+                'status': "error",
+                'error': err
+            }
+            res.json(json)
         }
         else if(result.length<=0){
-            json.status = "error"
-            json.error = "No such user"
+            json = {
+                'status': "error",
+                'error': "No such user"
+            }
+            res.json(json)
         }
         else{
             user = result[0]
@@ -28,14 +33,18 @@ router.post('/',jsonParser,function(req,res){
                         'verify': true
                     }
                 })
+                json = {'status': "OK"}
+                res.json(json)
             }
             else{
-                json.status = "error"
-                json.error = "Wrong key"
+                json = {
+                    'status': "error",
+                    'error': "Wrong key"
+                }
+                res.json(json)
             }
         }
     })
-    res.json(json)
 })
 
 module.exports = router;

@@ -10,32 +10,45 @@ var nodemailer = require('nodemailer');
 router.post('/',jsonParser,function(req,res){
     data = req.body //username: string, password: string
     var db = req.app.locals.db
-    json = {'status': "OK"}
     db.collection("users").find({'username': data.username}).toArray(function(err, result){
         if(err){
-            json.status = "error"
-            json.error = err
+            json = {
+                'status': "error",
+                'error': err
+            }
+            res.json(json)
         }
         else if(result.length<=0){
-            json.status = "error"
             json.error = "No such user"
+            json = {
+                'status': "error",
+                'error': "No such user"
+            }
+            res.json(json)
         }
         else{
             user = result[0]
             if(user.password != data.password){
-                json.status = "error"
-                json.error = "Wrong Password"
+                json = {
+                    'status': "error",
+                    'error': "Wrong Password"
+                }
+                res.json(json)
             }
             else if(user.verify == false){
-                json.status = "error"
-                json.error = "Not verified"
+                json = {
+                    'status': "error",
+                    'error': "Not verified"
+                }
+                res.json(json)
             }
             else{
                 req.session.user = data.username
+                json = {'status': "OK"}
+                res.json(json)
             }
         }
     })
-    res.json(json)
 })
 
 module.exports = router;
