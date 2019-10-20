@@ -17,13 +17,16 @@ router.post('/',jsonParser,function(req,res){
     data.verify = false
     db.collection("users").find({$or:[{'username': data.username},{'email': data.email}]}).toArray(function(err, result){
         if(err){
-            json.status = "error"
-            json.error = err
-            console.log(err)
+            json = {
+                'status': "error",
+                'error': err
+            }
         }
         else if(result.length>=1){
-            json.status = "error"
-            json.error = "Duplicate username or email"
+            json = {
+                'status': "error",
+                'error': "Duplicate username or email"
+            }
         }
         else{
             var transporter = nodemailer.createTransport({
@@ -40,23 +43,26 @@ router.post('/',jsonParser,function(req,res){
                 text: "Validation key: <" + data.key + ">",
             }
             transporter.sendMail(mailOptions, function(err, info){
-                if (error) {
-                    json.status = "error"
-                    json.error = err
-                    console.log(err)
+                if (err) {
+                    json = {
+                        'status': "error",
+                        'error': err
+                    }
                 } else {
                     console.log('Email sent: ' + info.response);
                     db.collection("users").insertOne(data, function(err, result){
                         if(err){
-                            json.status = "error"
-                            json.error = err
-                            console.log(err)
+                            json = {
+                                'status': "error",
+                                'error': err
+                            }
                         }
                     })
                 }
             });
         }
     })
+    console.log(json)
     res.json(json)
 })
 
