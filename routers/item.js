@@ -10,10 +10,10 @@ var nodemailer = require('nodemailer');
 router.get('/:id',(req,res)=>{
     var id=req.param.id;
     var db = req.app.locals.db
-    getItem(id,db);
+    getItem(id,db,res);
 });
 
-function getItem(id,db){
+function getItem(id,db,res){
     var success=false;
     var item;
     var err;

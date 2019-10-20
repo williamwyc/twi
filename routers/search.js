@@ -11,10 +11,10 @@ router.post('/',(req,res)=>{
     var timestamp=req.body.timestamp;
     var limit=req.body.limit;
     var db = req.app.locals.db
-    search(timestamp,limit,db);
+    search(timestamp,limit,db,res);
 });
 
-function search(timestamp,limit,db){
+function search(timestamp,limit,db,res){
     var success=false;
     var items;
     var err;
