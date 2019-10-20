@@ -16,7 +16,7 @@ router.post('/',(req,res)=>{
 
 function search(timestamp,limit,db,res){
     //DB operation:Gets a list of the latest <limit> number of items prior to (and including) the provided <timestamp>
-    db.collection("items").find({'timestamp':{$lt:timestamp*1000}}).sort({'timestamp':-1}).limit(limit).toArray(function(err, result){
+    db.collection("items").find({'timestamp':{$lt:timestamp*1000}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
         if(err){
             res.json({
                 status:"error",
