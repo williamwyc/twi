@@ -18,6 +18,12 @@ router.post('/',(req,res)=>{
             error:"Login Frist"
         });
     }
+    else if(content == null){
+        res.json({
+            status:"error",
+            error:"No content"
+        });
+    }
     else{
         addItem(content,childType,user, db, res);
     }
