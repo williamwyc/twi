@@ -14,8 +14,11 @@ router.post('/',(req,res)=>{
     if(timestamp == null || timestamp <= 0){
         timestamp = Date.now()
     }
-    if(limit == null || limit <= 0){
+    if(limit == null || parseInt(limit) <= 0){
         limit = 25
+    }
+    else if(parseInt(limit) >= 100){
+        limit = 100
     }
     search(timestamp,limit,db,res);
 });
