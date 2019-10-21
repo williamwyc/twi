@@ -11,6 +11,12 @@ router.post('/',(req,res)=>{
     var timestamp=req.body.timestamp;
     var limit=req.body.limit;
     var db = req.app.locals.db
+    if(timestamp == null || timestamp <= 0){
+        timestamp = Date.now()
+    }
+    if(limit == null || limit <= 0){
+        limit = 25
+    }
     search(timestamp,limit,db,res);
 });
 
