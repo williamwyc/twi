@@ -8,7 +8,7 @@ var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 
 router.get('/',jsonParser,(req,res)=>{
-    res.render('login.ejs');
+    res.render('login.ejs', {data:null});
 });
 router.post('/',jsonParser,function(req,res){
     data = req.body //username: string, password: string
