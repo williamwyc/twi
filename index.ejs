@@ -5,10 +5,12 @@
         function addItem(){
             $('#addItem').show();
             $('#searchItem').hide();
+            $('#getItem').hide();
         }
         function searchItem(){
             $('#searchItem').show();
             $('#addItem').hide();
+            $('#getItem').hide();
         }
         function addItemSubmit(){
             var content=$('#content').val;
@@ -61,6 +63,27 @@
                 }
             });
         }
+        function getItem(){
+            $('#addItem').hide();
+            $('#searchItem').hide();
+            $('#getItem').show();
+        }
+        function getItemSubmit(){
+            var id=$('#id').val;
+            $.ajax({
+                type: 'post',
+                url: '/item',
+                data: {id:id},
+                success: function (d) {
+                    if(d.status=="OK"){
+                        //window.location.replace("/");
+                        $('#getItemResult').text(d);
+                    }else{
+                        $('#getItemResult').text("Get Failed:"+d.message);
+                    }
+                }
+            });
+        }
         $(document).ready(function() {
             $('#addItem').hide();
             $('#searchItem').hide();
@@ -72,15 +95,25 @@
         <div id="indexErr"></div>
         <tr><h1>Welcome to Twitter! </h1></tr>
         <tr>
+                <td><button onclick="getItem()" type="text">Get Item!</button></td>
+        </tr>
+        <tr>
                 <td><button onclick="addItem()" type="text">Add Item!</button></td>
         </tr>
         <tr>
                 <td><button onclick="searchItem()" type="text">Search Item!</button></td>
         </tr>
         <tr>
-                <td><button onclick="logout()" type="text"></button></td>
+                <td><button onclick="logout()" type="text">Log Out!</button></td>
                
         </tr>
+    </table>
+    <table id ="getItem">
+            <tr>
+                    <td><h2>ID:</h2></td><td><input type="number" id="id"></td>
+            </tr>
+            <tr><td><button onclick="getItemSubmit()" type="text">View Tweet!</button></td></tr>
+            <tr><td id="getItemResult"></td></tr>
     </table>
     <table id="addItem">
             <tr>
