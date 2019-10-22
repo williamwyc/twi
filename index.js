@@ -40,8 +40,15 @@ app.set('views', path.join(__dirname));
 app.set('view engine', 'html');
 
 app.get('/', function (req, res) {
-  res.sendFile( __dirname + "/html/index.html" );
-})
+  //res.sendFile( __dirname + "/html/index.html" );
+  var user = req.session.user
+  if(user == null){
+    res.redirect('/login');
+  }else{
+    res.render('index.ejs');
+  }
+  
+});
 
 MongoClient.connect('mongodb://localhost:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
   if (err){
@@ -49,7 +56,7 @@ MongoClient.connect('mongodb://localhost:27017',{ useUnifiedTopology: true, useN
   }
   console.log('Mongodb Connected');
   app.locals.db = client.db('twi');
-  app.listen(3000, function(){
+  app.listen(80, function(){
     console.log("Listening...")
   })
-})
+});

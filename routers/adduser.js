@@ -7,6 +7,9 @@ var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 
+router.get('/',(req,res)=>{
+    res.render('adduser.ejs');
+})
 router.post('/',jsonParser,function(req,res){
     data = req.body // username: string, email: string, password: string
     console.log("Add User: ")
@@ -37,11 +40,13 @@ router.post('/',jsonParser,function(req,res){
                     rejectUnauthorized: false
                 }
             }); 
+            let text = 'key: <' +data.key + '>'
+            var link = "http://" + req.get('host') + "/verify?email=" + data.email + "&key=" + data.key;
             var mailOptions = {
                 from: 'ubuntu@arknights.com', 
                 to: data.email,
                 subject: 'Twitter Clone: Verify your account',
-                text: "Validation key: <" + data.key + ">",
+                text: "Hello! <br> Please verify your email.<br><a href=" + link + ">" + text + "</a>",
             }
             transporter.sendMail(mailOptions, function(err, info){
                 if (err) {

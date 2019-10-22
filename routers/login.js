@@ -7,6 +7,9 @@ var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 
+router.get('/',jsonParser,(req,res)=>{
+    res.render('login.ejs');
+});
 router.post('/',jsonParser,function(req,res){
     data = req.body //username: string, password: string
     var db = req.app.locals.db

@@ -6,6 +6,22 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
+var request = require('request');
+
+router.get('/',jsonParser,(req,res)=>{
+    var email=req.param.email;
+    var key=req.param.key;
+    request.post({
+        url:     '/verify',
+        form:    { email:email,key:key }
+      }, function(error, response, body){
+        //res.json(response);
+        if(response.status=="OK"){
+            res.render('login.ejs',{data:"Verified. Please login"});
+        }
+    });
+});
+
 
 router.post('/',jsonParser,function(req,res){
     data = req.body //email: string, key: string
