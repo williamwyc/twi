@@ -71,9 +71,8 @@
         function getItemSubmit(){
             var id=$('#id').val;
             $.ajax({
-                type: 'post',
-                url: '/item',
-                data: {id:id},
+                type: 'GET',
+                url: '/item/'+id,
                 success: function (d) {
                     if(d.status=="OK"){
                         //window.location.replace("/");
