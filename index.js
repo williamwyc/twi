@@ -56,7 +56,7 @@ MongoClient.connect('mongodb://localhost:27017',{ useUnifiedTopology: true, useN
   }
   console.log('Mongodb Connected');
   app.locals.db = client.db('twi');
-  app.listen(80, function(){
+  app.listen(3000, function(){
     console.log("Listening...")
   })
 });
