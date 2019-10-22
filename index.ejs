@@ -1,0 +1,115 @@
+<html>
+<head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        function addItem(){
+            $('#addItem').show();
+            $('#searchItem').hide();
+        }
+        function searchItem(){
+            $('#searchItem').show();
+            $('#addItem').hide();
+        }
+        function addItemSubmit(){
+            var content=$('#content').val;
+            var childtype=$('#childtype').val=="null"?null:$('#childtype').val;
+
+
+            $.ajax({
+                type: 'post',
+                url: '/additem',
+                data: {content:content,childtype:childtype},
+                success: function (d) {
+                    if(d.status=="OK"){
+                        //window.location.replace("/");
+                        $('#addItemResult').text(d);
+                    }else{
+                        $('#addItemResult').text("Add Item Failed:"+d.message);
+                    }
+                }
+            });
+        }
+        function searchSubmit(){
+            var timestamp=$('#timestamp').val;
+            var limit=$('#limit').val;
+            $.ajax({
+                type: 'post',
+                url: '/search',
+                data: {timestamp:timestamp,limit:limit},
+                success: function (d) {
+                    if(d.status=="OK"){
+                        //window.location.replace("/");
+                        $('#searchItemResult').text(d);
+                    }else{
+                        $('#searchItemResult').text("Search Failed:"+d.message);
+                    }
+                }
+            });
+        }
+        function logout(){
+            $.ajax({
+                type: 'post',
+                url: '/logout',
+                data: {},
+                success: function (d) {
+                    if(d.status=="OK"){
+                        window.location.replace("/");
+                        //$('#searchItemResult').text(d);
+                    }else{
+                        $('#indexErr').text("Log out Failed:"+d.message);
+                    }
+                }
+            });
+        }
+        $(document).ready(function() {
+            $('#addItem').hide();
+            $('#searchItem').hide();
+        });
+    </script>
+</head>
+<body>
+    <table>
+        <div id="indexErr"></div>
+        <tr><h1>Welcome to Twitter! </h1></tr>
+        <tr>
+                <td><button onclick="addItem()" type="text">Add Item!</button></td>
+        </tr>
+        <tr>
+                <td><button onclick="searchItem()" type="text">Search Item!</button></td>
+        </tr>
+        <tr>
+                <td><button onclick="logout()" type="text"></button></td>
+               
+        </tr>
+    </table>
+    <table id="addItem">
+            <tr>
+                <td><h2>Content:</h2></td><td><input type="textarea" id="content"></td>
+            </tr>
+            <tr>
+                <td><h2>ChildType:</h2></td>
+                <td>
+                        <select id="childtype">
+                            <option value="null">None</option>
+                            <option value="retweet">Retweet</option>
+                            <option value="reply">Reply</option>
+                        </select>
+                </td>
+                
+            </tr>
+            <tr><td><button onclick="addItemSubmit()" type="text">Tweet!</button></td></tr>
+            <tr><td id="addItemResult"></td></tr>
+    </table>
+    <table id="searchItem">
+            <tr>
+                <td><h2>timestamp:</h2></td><td><input type="number" id="timestamp"></td>
+            </tr>
+            <tr>
+                <td><h2>Limit:</h2></td><td><input type="number" id="limit"></td>
+            </tr>
+            <tr><td><button onclick="searchSubmit()" type="text">Search!</button></td></tr>
+            <tr><td id="searchItemResult"></td></tr>
+    </table>
+</body>
+
+</html>

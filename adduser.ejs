@@ -1,0 +1,44 @@
+<html>
+<head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        
+        function signUp(){
+            var username=$('#username').val;
+            var password=$('#password').val;
+            var email=$('#email').val;
+            $.ajax({
+                type: 'post',
+                url: '/adduser',
+                data: {username:username,password:password,email:email},
+                success: function (d) {
+                    if(d.status=="OK"){
+                        //window.location.replace("/");
+                        $('#signUpErr').text("You have signed up succesfully. Please check your email to verify the acount");
+                    }else{
+                        $('#signUpErr').text("Sign up Failed:"+d.message);
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+        <table>
+                <div id="signUpErr"></div>
+                <tr><h1>Twitter Sign Up</h1></tr>
+                <tr>
+                    <td><h2>Username:</h2></td><td><input type="text" id="username"></td>
+                </tr>
+                <tr>
+                    <td><h2>Email:</h2></td><td><input type="text" id="email"></td>
+                </tr>
+                <tr>
+                    <td><h2>Password:</h2></td><td><input type="text" id="password"></td>
+                </tr>
+                <tr>
+                    <td><button onclick="signUp()" type="text">Sign Up!(Add User)</button></td>
+                </tr>
+        </table>
+</body>
+</html>

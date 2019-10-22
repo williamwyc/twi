@@ -1,0 +1,45 @@
+<html>
+<head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        function login(){
+            var username=$('#username').val;
+            var password=$('#password').val;
+            $.ajax({
+                type: 'post',
+                url: '/login',
+                data: {username:username,password:password},
+                success: function (d) {
+                    if(d.status=="OK"){
+                        window.location.replace("/");
+                    }else{
+                        $('#loginErr').text("Login Failed:"+d.message);
+                    }
+                }
+            });
+        }
+        function signUp(){
+            window.location.replace("/adduser");
+        }
+    </script>
+</head>
+<body>
+    <table>
+        <div id="loginErr"></div>
+        <%if(data){%>
+            <h2><%=data%></h2>
+        <%}%>
+        <tr><h1>Twitter Login</h1></tr>
+        <tr>
+            <td><h2>Username:</h2></td><td><input type="text" id="username"></td>
+        </tr>
+        <tr>
+            <td><h2>Password:</h2></td><td><input type="text" id="password"></td>
+        </tr>
+        <tr>
+                <td><button onclick="login()" type="text">Submit</button></td>
+                <td><button onclick="signUp()" type="text">Sign Up!(Add User)</button></td>
+        </tr>
+    </table>
+</body>
+</html>
