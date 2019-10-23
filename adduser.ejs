@@ -4,9 +4,9 @@
     <script>
         
         function signUp(){
-            var username=$('#username').val;
-            var password=$('#password').val;
-            var email=$('#email').val;
+            var username=$('#username').val();
+            var password=$('#password').val();
+            var email=$('#email').val();
             $.ajax({
                 type: 'post',
                 url: '/adduser',
@@ -16,7 +16,7 @@
                         //window.location.replace("/");
                         $('#signUpErr').text("You have signed up succesfully. Please check your email to verify the acount");
                     }else{
-                        $('#signUpErr').text("Sign up Failed:"+d.message);
+                        $('#signUpErr').text("Sign up Failed:"+JSON.stringify(d));
                     }
                 }
             });

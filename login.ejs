@@ -3,8 +3,8 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         function login(){
-            var username=$('#username').val;
-            var password=$('#password').val;
+            var username=$('#username').val();
+            var password=$('#password').val();
             $.ajax({
                 type: 'post',
                 url: '/login',
@@ -13,7 +13,8 @@
                     if(d.status=="OK"){
                         window.location.replace("/");
                     }else{
-                        $('#loginErr').text("Login Failed:"+d.message);
+                        console.log(d);
+                        $('#loginErr').text("Login Failed:"+JSON.stringify(d));
                     }
                 }
             });
@@ -34,7 +35,7 @@
             <td><h2>Username:</h2></td><td><input type="text" id="username"></td>
         </tr>
         <tr>
-            <td><h2>Password:</h2></td><td><input type="text" id="password"></td>
+            <td><h2>Password:</h2></td><td><input type="password" id="password"></td>
         </tr>
         <tr>
                 <td><button onclick="login()" type="text">Submit</button></td>

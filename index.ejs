@@ -3,18 +3,18 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         function addItem(){
-            $('#addItem').show();
-            $('#searchItem').hide();
-            $('#getItem').hide();
+            $('.addItem').show();
+            $('.searchItem').hide();
+            $('.getItem').hide();
         }
         function searchItem(){
-            $('#searchItem').show();
-            $('#addItem').hide();
-            $('#getItem').hide();
+            $('.searchItem').show();
+            $('.addItem').hide();
+            $('.getItem').hide();
         }
         function addItemSubmit(){
-            var content=$('#content').val;
-            var childtype=$('#childtype').val=="null"?null:$('#childtype').val;
+            var content=$('#content').val();
+            var childtype=$('#childtype').val()=="null"?null:$('#childtype').val();
 
 
             $.ajax({
@@ -24,16 +24,18 @@
                 success: function (d) {
                     if(d.status=="OK"){
                         //window.location.replace("/");
-                        $('#addItemResult').text(d);
+                        $('#addItemResult').text(JSON.stringify(d));
+                        //console.log(d);
                     }else{
-                        $('#addItemResult').text("Add Item Failed:"+d.message);
+                        $('#addItemResult').text("Add Item Failed:"+JSON.stringify(d));
+                        //console.log("f:"+d);
                     }
                 }
             });
         }
         function searchSubmit(){
-            var timestamp=$('#timestamp').val;
-            var limit=$('#limit').val;
+            var timestamp=$('#timestamp').val();
+            var limit=$('#limit').val();
             $.ajax({
                 type: 'post',
                 url: '/search',
@@ -41,9 +43,11 @@
                 success: function (d) {
                     if(d.status=="OK"){
                         //window.location.replace("/");
-                        $('#searchItemResult').text(d);
+                        $('#searchItemResult').text(JSON.stringify(d));
+                        console.log(d);
                     }else{
-                        $('#searchItemResult').text("Search Failed:"+d.message);
+                        //console.log(d);
+                        $('#searchItemResult').text("Search Failed:"+JSON.stringify(d));
                     }
                 }
             });
@@ -58,34 +62,36 @@
                         window.location.replace("/");
                         //$('#searchItemResult').text(d);
                     }else{
-                        $('#indexErr').text("Log out Failed:"+d.message);
+                        $('#indexErr').text("Log out Failed:"+JSON.stringify(d));
                     }
                 }
             });
         }
         function getItem(){
-            $('#addItem').hide();
-            $('#searchItem').hide();
-            $('#getItem').show();
+            $('.addItem').hide();
+            $('.searchItem').hide();
+            $('.getItem').show();
         }
         function getItemSubmit(){
-            var id=$('#id').val;
+            var id=$('#id').val();
+            var url='/item/'+id;
             $.ajax({
                 type: 'GET',
-                url: '/item/'+id,
+                url: url,
                 success: function (d) {
                     if(d.status=="OK"){
                         //window.location.replace("/");
-                        $('#getItemResult').text(d);
+                        $('#getItemResult').text(JSON.stringify(d));
                     }else{
-                        $('#getItemResult').text("Get Failed:"+d.message);
+                        $('#getItemResult').text("Get Failed:"+JSON.stringify(d));
                     }
                 }
             });
         }
         $(document).ready(function() {
-            $('#addItem').hide();
-            $('#searchItem').hide();
+            $('.addItem').hide();
+            $('.searchItem').hide();
+            $('.getItem').hide();
         });
     </script>
 </head>
@@ -107,19 +113,19 @@
                
         </tr>
     </table>
-    <table id ="getItem">
+    <table class="getItem">
             <tr>
-                    <td><h2>ID:</h2></td><td><input type="number" id="id"></td>
+                    <td>ID:</td><td><input type="text" id="id"></td>
             </tr>
             <tr><td><button onclick="getItemSubmit()" type="text">View Tweet!</button></td></tr>
-            <tr><td id="getItemResult"></td></tr>
+            <tr><td></td></tr>
     </table>
-    <table id="addItem">
+    <table class="addItem">
             <tr>
-                <td><h2>Content:</h2></td><td><input type="textarea" id="content"></td>
+                <td>Content:</td><td><input type="textarea" id="content"></td>
             </tr>
             <tr>
-                <td><h2>ChildType:</h2></td>
+                <td>ChildType:</td>
                 <td>
                         <select id="childtype">
                             <option value="null">None</option>
@@ -130,18 +136,21 @@
                 
             </tr>
             <tr><td><button onclick="addItemSubmit()" type="text">Tweet!</button></td></tr>
-            <tr><td id="addItemResult"></td></tr>
+            <tr><td></td></tr>
     </table>
-    <table id="searchItem">
+    <table class="searchItem">
             <tr>
-                <td><h2>timestamp:</h2></td><td><input type="number" id="timestamp"></td>
+                <td>Timestamp:</td><td><input type="number" id="timestamp"></td>
             </tr>
             <tr>
-                <td><h2>Limit:</h2></td><td><input type="number" id="limit"></td>
+                <td>Limit:</td><td><input type="number" id="limit"></td>
             </tr>
             <tr><td><button onclick="searchSubmit()" type="text">Search!</button></td></tr>
-            <tr><td id="searchItemResult"></td></tr>
+            <tr><td></td></tr>
     </table>
+    <div class="getItem" id="getItemResult"></div>
+    <div class="addItem" id="addItemResult"></div>
+    <div class="searchItem" id="searchItemResult"></div>
 </body>
 
 </html>

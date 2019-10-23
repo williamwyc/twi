@@ -8,22 +8,22 @@ var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 
 router.get('/',jsonParser,(req,res)=>{
-    res.render('login.ejs');
+    res.render('login.ejs',{data:null});
 });
 router.post('/',jsonParser,function(req,res){
     data = req.body //username: string, password: string
     var db = req.app.locals.db
     db.collection("users").find({'username': data.username}).toArray(function(err, result){
         if(err){
-            json = {
+            var json = {
                 'status': "error",
                 'error': err
             }
             res.json(json)
         }
         else if(result.length<=0){
-            json.error = "No such user"
-            json = {
+            //json.error = "No such user"
+            var json = {
                 'status': "error",
                 'error': "No such user"
             }
@@ -32,14 +32,14 @@ router.post('/',jsonParser,function(req,res){
         else{
             user = result[0]
             if(user.password != data.password){
-                json = {
+                var json = {
                     'status': "error",
                     'error': "Wrong Password"
                 }
                 res.json(json)
             }
             else if(user.verify == false){
-                json = {
+                var json = {
                     'status': "error",
                     'error': "Not verified"
                 }
@@ -47,7 +47,7 @@ router.post('/',jsonParser,function(req,res){
             }
             else{
                 req.session.user = data.username
-                json = {'status': "OK"}
+                var json = {'status': "OK"}
                 res.json(json)
             }
         }
