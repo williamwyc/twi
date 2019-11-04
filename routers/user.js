@@ -26,8 +26,36 @@ router.get('/:username',(req,res)=>{
             });
         }
         else{
-            var followers = req.app.locals.db.collection("follow").find({'following': req.params.username}).count()
-            console.log(req.params.username,followers)
+            req.app.locals.db.collection("follow").find({'following': req.params.username}).toArray(function(err, result){
+                if(err){
+                    res.json({
+                        status:"error",
+                        error:err
+                    });
+                }
+                else{
+                    var followers = result.length
+                    req.app.locals.db.collection("follow").find({'follower': req.params.username}).toArray(function(err, result){
+                        if(err){
+                            res.json({
+                                status:"error",
+                                error:err
+                            });
+                        }
+                        else{
+                            var following = result.length
+                            res.json({
+                                status:"OK",
+                                user:{
+                                    email: result[0].email,
+                                    followers: followers,
+                                    following: following
+                                }
+                            })
+                        }
+                })
+                }
+            })
             res.json({
                 status:"OK",
                 user:{
