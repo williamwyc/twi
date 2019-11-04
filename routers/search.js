@@ -29,6 +29,7 @@ router.post('/',(req,res)=>{
         }
         else{
             req.body.following = true
+            search(req.body.timestamp,req.body.limit,req.body.q,req.body.username,req.body.following,req.app.locals.db,req,res);
         }
     }
     else if(req.body.following == true){
@@ -38,8 +39,13 @@ router.post('/',(req,res)=>{
                 error:"Login First"
             });
         }
+        else{
+            search(req.body.timestamp,req.body.limit,req.body.q,req.body.username,req.body.following,req.app.locals.db,req,res);
+        }
     }
-    search(req.body.timestamp,req.body.limit,req.body.q,req.body.username,req.body.following,req.app.locals.db,req,res);
+    else{
+        search(req.body.timestamp,req.body.limit,req.body.q,req.body.username,req.body.following,req.app.locals.db,req,res);
+    }
 });
 
 function search(timestamp,limit,q,username,following,db,req,res){
