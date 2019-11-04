@@ -21,12 +21,12 @@ router.post('/',(req,res)=>{
         });
     }
     else{
-        addItem(req, res);
+
+        addItem(req, res,Date.now());
     }
 });
 
-function addItem(req, res){
-    var timestamp = Date.now()
+function addItem(req, res,timestamp){
     db.collection("items").insertOne({
         _id: req.session.user + timestamp,
         id: req.session.user + timestamp,
@@ -46,7 +46,7 @@ function addItem(req, res){
         else{
             res.json({
                 status:"OK",
-                id: id
+                id: req.session.user + timestamp
             });
         }
     })
