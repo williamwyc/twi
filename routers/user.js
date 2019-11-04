@@ -12,7 +12,7 @@ var nodemailer = require('nodemailer');
 router.get('/:username',(req,res)=>{
     console.log("Get User:")
     console.log(req.params.username)
-    db.collection("users").find({'username':req.params.username}).toArray(function(err, result){
+    req.app.locals.db.collection("users").find({'username':req.params.username}).toArray(function(err, result){
         if(err){
             res.json({
                 status:"error",
@@ -30,8 +30,8 @@ router.get('/:username',(req,res)=>{
                 status:"OK",
                 user:{
                     email: result[0].email,
-                    followers: db.collection("follow").find({'following': req.params.username}).count(),
-                    following: db.collection("follow").find({'follower': req.params.username}).count()
+                    followers: req.app.locals.db.collection("follow").find({'following': req.params.username}).count(),
+                    following: req.app.locals.db.collection("follow").find({'follower': req.params.username}).count()
                 }
             });
         }
