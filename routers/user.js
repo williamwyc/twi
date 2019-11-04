@@ -26,6 +26,7 @@ router.get('/:username',(req,res)=>{
             });
         }
         else{
+            email = result[0].email
             req.app.locals.db.collection("follow").find({'following': req.params.username}).toArray(function(err, result){
                 if(err){
                     res.json({
@@ -47,7 +48,7 @@ router.get('/:username',(req,res)=>{
                             res.json({
                                 status:"OK",
                                 user:{
-                                    email: result[0].email,
+                                    email: email,
                                     followers: followers,
                                     following: following
                                 }
