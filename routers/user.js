@@ -56,14 +56,6 @@ router.get('/:username',(req,res)=>{
                 })
                 }
             })
-            res.json({
-                status:"OK",
-                user:{
-                    email: result[0].email,
-                    followers: req.app.locals.db.collection("follow").find({'following': req.params.username}).count(),
-                    following: req.app.locals.db.collection("follow").find({'follower': req.params.username}).count()
-                }
-            });
         }
     })
 });
