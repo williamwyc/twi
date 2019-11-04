@@ -33,6 +33,7 @@ function addItem(content,childType,user, db, res){
     var timestamp = Date.now()
     var id = user + timestamp
     var item = {
+        _id: id,
         id: id,
         username: user,
         property: {
