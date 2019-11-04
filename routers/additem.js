@@ -28,8 +28,8 @@ router.post('/',(req,res)=>{
 function addItem(req, res){
     var timestamp = Date.now()
     db.collection("items").insertOne({
-        _id: user + timestamp,
-        id: user + timestamp,
+        _id: req.session.user + timestamp,
+        id: req.session.user + timestamp,
         username: req.session.user,
         property: {
             likes: 0
