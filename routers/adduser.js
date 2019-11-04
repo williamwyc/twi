@@ -17,16 +17,13 @@ router.post('/',jsonParser,function(req,res){
     db = req.app.locals.db //access db
     data.key = Math.floor((Math.random() * 899999) + 100000);
     data.verify = false
-    // data.followers = 0
-    // data.following = 0
-    // data.followers_list = []
-    // data.following_list = []
     db.collection("users").find({$or:[{'username': data.username},{'email': data.email}]}).toArray(function(err, result){
         if(err){
             json = {
                 'status': "error",
                 'error': err
             }
+            console.log(err)
             res.json(json)
         }
         else if(result.length>=1){
@@ -34,6 +31,7 @@ router.post('/',jsonParser,function(req,res){
                 'status': "error",
                 'error': "Duplicate username or email"
             }
+            console.log("Duplicate username or email")
             res.json(json)
         }
         else{
@@ -58,6 +56,7 @@ router.post('/',jsonParser,function(req,res){
                         'status': "error",
                         'error': err
                     }
+                    console.log(err)
                     res.json(json)
                 } else {
                     console.log('Email sent: ' + info.response);
@@ -67,6 +66,7 @@ router.post('/',jsonParser,function(req,res){
                                 'status': "error",
                                 'error': err
                             }
+                            console.log(err)
                             res.json(json)
                         }
                         else{
