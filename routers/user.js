@@ -110,7 +110,7 @@ router.get('/:username/followers',jsonParser,function(req,res){
         else{
             followers = []
             for(var i = 0; i<result.length; i++){
-                items.push(result[i].follower)
+                followers.push(result[i].follower)
             }
             res.json({
                 status: "OK",
@@ -140,7 +140,7 @@ router.get('/:username/following',jsonParser,function(req,res){
         else{
             followings = []
             for(var i = 0; i<result.length; i++){
-                items.push(result[i].following)
+                followings.push(result[i].following)
             }
             res.json({
                 status: "OK",
