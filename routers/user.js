@@ -26,11 +26,13 @@ router.get('/:username',(req,res)=>{
             });
         }
         else{
+            var followers = req.app.locals.db.collection("follow").find({'following': req.params.username}).count()
+            console.log(req.params.username,followers)
             res.json({
                 status:"OK",
                 user:{
                     email: result[0].email,
-                    followers: req.app.locals.db.collection("follow").count({'following': req.params.username}),
+                    followers: req.app.locals.db.collection("follow").find({'following': req.params.username}).count(),
                     following: req.app.locals.db.collection("follow").find({'follower': req.params.username}).count()
                 }
             });
