@@ -49,8 +49,10 @@ router.post('/',(req,res)=>{
 });
 
 function search(timestamp,limit,q,username,following,db,req,res){
+    q = ('/'+(q.split(' ').join('/ /'))+'/').split(' ') // "a b c" a/ /b/ /c
+    console.log(q)
     if(username!=null){
-        db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':username,'content':{$regex:q+".*"}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
+        db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':username,'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
             if(err){
                 console.log(err)
                 res.json({
@@ -77,7 +79,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
                 });
             }
             else{
-                db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':{$in:result},'content':{$regex:q+".*"}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
+                db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':{$in:result},'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
                     if(err){
                         console.log(err)
                         res.json({
@@ -97,7 +99,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
         })
     }
     else{
-        db.collection("items").find({'timestamp':{$lt:timestamp*1000},'content':{$regex:q+".*"}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
+        db.collection("items").find({'timestamp':{$lt:timestamp*1000},'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
             if(err){
                 console.log(err)
                 res.json({
