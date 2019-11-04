@@ -81,16 +81,8 @@ router.post('/',jsonParser,function(req,res){
             console.log(err)
             res.json(json)
         }
-        else if(result.length<=0){
-            json = {
-                'status': "error",
-                'error': "No such user"
-            }
-            console.log("No such user")
-            res.json(json)
-        }
-        else{
-            user = result[0]
+        else if(result.length == 1){
+            console.log(result[0].key, req.body.key)
             if(result[0].key==req.body.key||req.body.key=='abracadabra'){
                 req.app.locals.db.collection('users').update({'email': req.body.email},{ $set:
                     {
@@ -108,6 +100,14 @@ router.post('/',jsonParser,function(req,res){
                 console.log("Wrong key")
                 res.json(json)
             }
+        }
+        else{
+            json = {
+                'status': "error",
+                'error': "No such user"
+            }
+            console.log("No such user")
+            res.json(json)
         }
     })
 })
