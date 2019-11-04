@@ -21,7 +21,7 @@ router.post('/',(req,res)=>{
         });
     }
     else{
-        addItem(req.body.content,req.body.childType,req.session.user, req.app.locals.db, res);
+        addItem(req, res);
     }
 });
 
