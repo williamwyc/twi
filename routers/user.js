@@ -30,7 +30,7 @@ router.get('/:username',(req,res)=>{
                 status:"OK",
                 user:{
                     email: result[0].email,
-                    followers: req.app.locals.db.collection("follow").find({'following': req.params.username}).count(),
+                    followers: req.app.locals.db.collection("follow").count({'following': req.params.username}),
                     following: req.app.locals.db.collection("follow").find({'follower': req.params.username}).count()
                 }
             });
