@@ -56,6 +56,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
     }
     if(username!=null){
         query.username = username
+        console.log(query)
         db.collection("items").find(query).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
             if(err){
                 console.log(err)
@@ -84,6 +85,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
             }
             else{
                 query.username = {$in:result}
+                console.log(query)
                 db.collection("items").find(query).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
                     if(err){
                         console.log(err)
@@ -104,6 +106,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
         })
     }
     else{
+        console.log(query)
         db.collection("items").find(query).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
             if(err){
                 console.log(err)
