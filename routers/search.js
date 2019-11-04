@@ -8,43 +8,36 @@ var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 
 router.post('/',(req,res)=>{
-    var timestamp=req.body.timestamp;
-    var limit=req.body.limit;
-    var q = req.body.q;//search query
-    var username = req.body.username;//username
-    var following = req.body.following;
-    var db = req.app.locals.db
-    var user = req.session.user
     //Default value
-    if(timestamp == null || timestamp <= 0){
-        timestamp = Date.now()
+    if(req.body.timestamp == null || req.body.timestamp <= 0){
+        req.body.timestamp = Date.now()
     }
-    if(limit == null || parseInt(limit) <= 0){
-        limit = 25
+    if(req.body.limit == null || parseInt(req.body.limit) <= 0){
+        req.body.limit = 25
     }
-    else if(parseInt(limit) >= 100){
-        limit = 100
+    else if(parseInt(req.body.limit) >= 100){
+        req.body.limit = 100
     }
-    if(following == null){
-        if(user == null){
+    if(req.body.following == null){
+        if(req.session.user == null){
             res.json({
                 status:"error",
                 error:"Login First"
             });
         }
         else{
-            following = true
+            req.body.following = true
         }
     }
-    else if(following == true){
-        if(user == null){
+    else if(req.body.following == true){
+        if(req.session.user == null){
             res.json({
                 status:"error",
                 error:"Login First"
             });
         }
     }
-    search(timestamp,limit,q,username,following,db,req,res);
+    search(req.body.timestamp,req.body.limit,req.body.q,req.body.username,req.body.following,req.app.locals.db,req,res);
 });
 
 function search(timestamp,limit,q,username,following,db,req,res){

@@ -12,9 +12,9 @@ router.get('/',jsonParser,(req,res)=>{
 
 });
 router.post('/',jsonParser,function(req,res){
-    data = req.body //username: string, password: string
+    //username: string, password: string
     var db = req.app.locals.db
-    db.collection("users").find({'username': data.username}).toArray(function(err, result){
+    db.collection("users").find({'username': req.body.username}).toArray(function(err, result){
         if(err){
             var json = {
                 'status': "error",
@@ -32,7 +32,7 @@ router.post('/',jsonParser,function(req,res){
         }
         else{
             user = result[0]
-            if(user.password != data.password){
+            if(user.password != req.body.password){
                 var json = {
                     'status': "error",
                     'error': "Wrong Password"
@@ -47,7 +47,7 @@ router.post('/',jsonParser,function(req,res){
                 res.json(json)
             }
             else{
-                req.session.user = data.username
+                req.session.user = req.body.username
                 var json = {'status': "OK"}
                 res.json(json)
             }

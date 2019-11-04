@@ -70,11 +70,10 @@ router.get('/',jsonParser,(req,res)=>{
     })
 });
 
-
 router.post('/',jsonParser,function(req,res){
-    data = req.body //email: string, key: string
     console.log("Verify a user:")
     console.log(data)
+    data = req.body //email: string, key: string
     var db = req.app.locals.db
     db.collection("users").find({'email': data.email}).toArray(function(err,result){
         if(err){

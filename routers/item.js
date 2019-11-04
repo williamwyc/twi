@@ -8,19 +8,15 @@ var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 
 router.get('/:id',(req,res)=>{
-    var id=req.params.id;
     console.log("Get item:")
     console.log(req.params)
-    var db = req.app.locals.db
-    getItem(id,db,res);
+    getItem(req.params.id,db,res);
 });
 
 router.delete('/:id',(req,res)=>{
-    var id=req.params.id;
     console.log("Delete item:")
     console.log(req.params)
-    var db = req.app.locals.db
-    deleteItem(id,db,req,res);
+    deleteItem(req.params.id,req.app.locals.db,req,res);
 });
 
 function getItem(id,db,res){

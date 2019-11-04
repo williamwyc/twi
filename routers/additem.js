@@ -8,42 +8,35 @@ var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 
 router.post('/',(req,res)=>{
-    var content=req.body.content;
-    var childType=req.body.childType;
-    var user = req.session.user
-    var db = req.app.locals.db
-    if(user == null){
+    if(req.session.user == null){
         res.json({
             status:"error",
             error:"Login Frist"
         });
     }
-    else if(content == null){
+    else if(req.body.content == null){
         res.json({
             status:"error",
             error:"No content"
         });
     }
     else{
-        addItem(content,childType,user, db, res);
+        addItem(req.body.content,req.body.childType,req.session.user, req.app.locals.db, res);
     }
 });
 
-function addItem(content,childType,user, db, res){
+function addItem(req, res){
     var timestamp = Date.now()
-    var id = user + timestamp
-    var item = {
-        _id: id,
-        id: id,
-        username: user,
+    db.collection("items").insertOne({
+        _id: user + timestamp,
+        id: user + timestamp,
+        username: req.session.user,
         property: {
             likes: 0
         },
         retweeted: 0,
-        content: content,
-        timestamp: timestamp
-    }
-    db.collection("items").insertOne(item,function(err, result){
+        content: req.body.content,
+        timestamp: timestamp},function(err, result){
         if(err){
             res.json({
                 status:"error",

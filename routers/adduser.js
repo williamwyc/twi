@@ -1,24 +1,21 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
-var path = require('path');
-var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
-var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 
 router.get('/',(req,res)=>{
     res.render('adduser.ejs');
 })
 router.post('/',jsonParser,function(req,res){
-    data = req.body // username: string, email: string, password: string
+    // username: string, email: string, password: string
     console.log("Add User: ")
-    console.log(data)
+    console.log(req.body)
     db = req.app.locals.db //access db
-    data.key = Math.floor((Math.random() * 899999) + 100000);
-    data.verify = false
-    data._id = data.username
-    db.collection("users").find({$or:[{'username': data.username},{'email': data.email}]}).toArray(function(err, result){
+    req.body.key = Math.floor((Math.random() * 899999) + 100000);
+    req.body.verify = false
+    req.body._id = req.body.username
+    db.collection("users").find({$or:[{'username': req.body.username},{'email': req.body.email}]}).toArray(function(err, result){
         if(err){
             json = {
                 'status': "error",
@@ -43,11 +40,11 @@ router.post('/',jsonParser,function(req,res){
                     rejectUnauthorized: false
                 }
             }); 
-            let text = 'key: <' +data.key + '>'
-            var link = "http://" + req.get('host') + "/verify?email=" + data.email + "&key=" + data.key;
+            let text = 'key: <' +req.body.key + '>'
+            var link = "http://" + req.get('host') + "/verify?email=" + req.body.email + "&key=" + req.body.key;
             var mailOptions = {
                 from: 'ubuntu@arknights.com', 
-                to: data.email,
+                to: req.body.email,
                 subject: 'Twitter Clone: Verify your account',
                 text: "Hello! <br> Please verify your email.<br><a href=" + link + ">" + text + "</a>",
             }
@@ -61,7 +58,7 @@ router.post('/',jsonParser,function(req,res){
                     res.json(json)
                 } else {
                     console.log('Email sent: ' + info.response);
-                    db.collection("users").insertOne(data, function(err, result){
+                    db.collection("users").insertOne(req.body, function(err, result){
                         if(err){
                             json = {
                                 'status': "error",
