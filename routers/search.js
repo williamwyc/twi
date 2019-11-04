@@ -49,10 +49,10 @@ router.post('/',(req,res)=>{
 });
 
 function search(timestamp,limit,q,username,following,db,req,res){
-    //q = ('/'+(q.split(' ').join('/ /'))+'/').split(' ')
+    console.log(timestamp, limit, q, username, following)
     var query = {'timestamp':{$lt:timestamp*1000}}
-    if (req.body.q != null && req.body.q != "") {
-        query.$text = {$search: req.body.q}
+    if (q != null && q != "") {
+        query.$text = {$search: q}
     }
     if(username!=null){
         query.username = username
@@ -74,7 +74,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
             }
         })
     }
-    else if(following){
+    else if(following == true){
         db.collection("follow").find({'follower':req.session.user}).toArray(function(err, result){
             if(err){
                 console.log(err)
