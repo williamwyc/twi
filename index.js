@@ -23,6 +23,8 @@ var verify = require("./routers/verify.js")
 var additem = require("./routers/additem.js")
 var item = require("./routers/item.js")
 var search = require("./routers/search.js")
+var user = require("./routers/user.js")
+var follow = require("./routers/follow.js")
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -33,6 +35,8 @@ app.use("/verify", verify)
 app.use("/additem", additem)
 app.use("/item", item)
 app.use("/search", search)
+app.use("/user",user)
+app.use("/follow",follow)
 app.use(express.static(__dirname));
 
 app.engine('html', require('ejs').renderFile);

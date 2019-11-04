@@ -17,6 +17,10 @@ router.post('/',jsonParser,function(req,res){
     db = req.app.locals.db //access db
     data.key = Math.floor((Math.random() * 899999) + 100000);
     data.verify = false
+    // data.followers = 0
+    // data.following = 0
+    // data.followers_list = []
+    // data.following_list = []
     db.collection("users").find({$or:[{'username': data.username},{'email': data.email}]}).toArray(function(err, result){
         if(err){
             json = {
