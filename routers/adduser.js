@@ -40,13 +40,11 @@ router.post('/',jsonParser,function(req,res){
                     rejectUnauthorized: false
                 }
             }); 
-            let text = 'key: <' +req.body.key + '>'
-            var link = "http://" + req.get('host') + "/verify?email=" + req.body.email + "&key=" + req.body.key;
             var mailOptions = {
                 from: 'ubuntu@arknights.com', 
                 to: req.body.email,
                 subject: 'Twitter Clone: Verify your account',
-                text: "Hello! <br> Please verify your email.<br><a href=" + link + ">" + text + "</a>",
+                text: "Hello! Please verify your email.<" + "http://" + req.get('host') + "/verify?email=" + req.body.email + "&key=" + req.body.key + ">" + 'key: <' +req.body.key + '>',
             }
             transporter.sendMail(mailOptions, function(err, info){
                 if (err) {
