@@ -49,10 +49,14 @@ router.post('/',(req,res)=>{
 });
 
 function search(timestamp,limit,q,username,following,db,req,res){
-    q = ('/'+(q.split(' ').join('/ /'))+'/').split(' ') // "a b c" a/ /b/ /c
-    console.log(q)
+    //q = ('/'+(q.split(' ').join('/ /'))+'/').split(' ')
+    var query = {'timestamp':{$lt:timestamp*1000}}
+    if (req.body.q != null && req.body.q != "") {
+        query.$text = {$search: req.body.q}
+    }
     if(username!=null){
-        db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':username,'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
+        query.username = username
+        db.collection("items").find(query).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
             if(err){
                 console.log(err)
                 res.json({
@@ -79,7 +83,8 @@ function search(timestamp,limit,q,username,following,db,req,res){
                 });
             }
             else{
-                db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':{$in:result},'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
+                query.username = {$in:result}
+                db.collection("items").find(query).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
                     if(err){
                         console.log(err)
                         res.json({
@@ -99,7 +104,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
         })
     }
     else{
-        db.collection("items").find({'timestamp':{$lt:timestamp*1000},'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
+        db.collection("items").find(query).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
             if(err){
                 console.log(err)
                 res.json({
@@ -116,6 +121,71 @@ function search(timestamp,limit,q,username,following,db,req,res){
             }
         })
     }
+    // if(username!=null){
+    //     db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':username,'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
+    //         if(err){
+    //             console.log(err)
+    //             res.json({
+    //                 status:"error",
+    //                 error:err
+    //             });
+    //         }
+    //         else{
+    //             console.log(result)
+    //             res.json({
+    //                 status:"OK",
+    //                 items:result
+    //             });
+    //         }
+    //     })
+    // }
+    // else if(following){
+    //     db.collection("follow").find({'follower':req.session.user}).toArray(function(err, result){
+    //         if(err){
+    //             console.log(err)
+    //             res.json({
+    //                 status:"error",
+    //                 error:err
+    //             });
+    //         }
+    //         else{
+    //             db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':{$in:result},'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
+    //                 if(err){
+    //                     console.log(err)
+    //                     res.json({
+    //                         status:"error",
+    //                         error:err
+    //                     });
+    //                 }
+    //                 else{
+    //                     console.log(result)
+    //                     res.json({
+    //                         status:"OK",
+    //                         items:result
+    //                     });
+    //                 }
+    //             })
+    //         }
+    //     })
+    // }
+    // else{
+    //     db.collection("items").find({'timestamp':{$lt:timestamp*1000},'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
+    //         if(err){
+    //             console.log(err)
+    //             res.json({
+    //                 status:"error",
+    //                 error:err
+    //             });
+    //         }
+    //         else{
+    //             console.log(result)
+    //             res.json({
+    //                 status:"OK",
+    //                 items:result
+    //             });
+    //         }
+    //     })
+    // }
 }
 
 module.exports = router;
