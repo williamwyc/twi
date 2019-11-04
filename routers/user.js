@@ -63,15 +63,14 @@ router.get('/:username',(req,res)=>{
 
 router.get('/:username/posts',jsonParser,function(req,res){
     console.log("Get Posts:")
-    console.log(req.params)
-    console.log(req.query)
-    if(req.params.limit == null || req.params.limit <= 0){
-        req.params.limit = 50
+    console.log(req.query.username,req.query.limit)
+    if(req.query.limit == null || req.query.limit <= 0){
+        req.query.limit = 50
     }
-    else if(req.params.limit >200){
-        req.params.limit = 200
+    else if(req.query.limit >200){
+        req.query.limit = 200
     }
-    req.app.locals.db.collection("items").find({'username': req.params.username}).sort({'timestamp':-1}).limit(parseInt(req.params.limit)).toArray(function(err, result){
+    req.app.locals.db.collection("items").find({'username': req.query.username}).sort({'timestamp':-1}).limit(parseInt(req.query.limit)).toArray(function(err, result){
         if(err){
             res.json({
                 status:"error",
@@ -94,15 +93,14 @@ router.get('/:username/posts',jsonParser,function(req,res){
 
 router.get('/:username/followers',jsonParser,function(req,res){
     console.log("Get Followers:")
-    console.log(req.params)
-    console.log(req.query)
-    if(req.params.limit == null || req.params.limit <= 0){
-        req.params.limit = 50
+    console.log(req.query.username,req.query.limit)
+    if(req.query.limit == null || req.query.limit <= 0){
+        req.query.limit = 50
     }
-    else if(req.params.limit >200){
-        req.params.limit = 200
+    else if(req.query.limit >200){
+        req.query.limit = 200
     }
-    req.app.locals.db.collection("follow").find({"following":req.params.username}).limit(parseInt(req.params.limit)).toArray(function(err,result){
+    req.app.locals.db.collection("follow").find({"following":req.query.username}).limit(parseInt(req.query.limit)).toArray(function(err,result){
         if(err){
             res.json({
                 status:"error",
@@ -120,15 +118,15 @@ router.get('/:username/followers',jsonParser,function(req,res){
 
 router.get('/:username/following',jsonParser,function(req,res){
     console.log("Get Following:")
-    console.log(req.params.username,req.params.limit)
-    if(req.params.limit == null || req.params.limit <= 0){
-        req.params.limit = 50
+    console.log(req.query.username,req.query.limit)
+    if(req.query.limit == null || req.query.limit <= 0){
+        req.query.limit = 50
     }
-    else if(req.params.limit >200){
-        req.params.limit = 200
+    else if(req.query.limit >200){
+        req.query.limit = 200
     }
     var db = req.app.locals.db
-    db.collection("follow").find({"follower":req.params.username}).limit(parseInt(req.params.limit)).toArray(function(err,result){
+    db.collection("follow").find({"follower":req.query.username}).limit(parseInt(req.query.limit)).toArray(function(err,result){
         if(err){
             res.json({
                 status:"error",
