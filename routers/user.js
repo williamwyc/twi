@@ -26,16 +26,12 @@ router.get('/:username',(req,res)=>{
             });
         }
         else{
-            var u = result[0]
-            var email = u.email
-            var followers = db.collection("follow").find({'following': req.params.username}).count()
-            var following = db.collection("follow").find({'follower': req.params.username}).count()
             res.json({
                 status:"OK",
                 user:{
-                    email: email,
-                    followers: followers,
-                    following: following
+                    email: result[0].email,
+                    followers: db.collection("follow").find({'following': req.params.username}).count(),
+                    following: db.collection("follow").find({'follower': req.params.username}).count()
                 }
             });
         }
