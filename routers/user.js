@@ -10,6 +10,8 @@ var nodemailer = require('nodemailer');
 
 //Gets user profile information for <username> (user doesn’t need to be signed in)
 router.get('/:username',(req,res)=>{
+    console.log("Get User:")
+    console.log(req.params.username)
     db.collection("users").find({'username':req.params.username}).toArray(function(err, result){
         if(err){
             res.json({
@@ -41,6 +43,8 @@ router.get('/:username',(req,res)=>{
 });
 
 router.get('/:username/posts',jsonParser,function(req,res){
+    console.log("Get Posts:")
+    console.log(req.params.username,req.body.limit)
     if(req.body.limit == null || req.body.limit <= 0){
         req.body.limit = 50
     }
@@ -69,6 +73,8 @@ router.get('/:username/posts',jsonParser,function(req,res){
 })
 
 router.get('/:username/followers',jsonParser,function(req,res){
+    console.log("Get Followers:")
+    console.log(req.params.username,req.body.limit)
     if(req.body.limit == null || req.body.limit <= 0){
         req.body.limit = 50
     }
@@ -92,6 +98,8 @@ router.get('/:username/followers',jsonParser,function(req,res){
 })
 
 router.get('/:username/following',jsonParser,function(req,res){
+    console.log("Get Following:")
+    console.log(req.params.username,req.body.limit)
     if(req.body.limit == null || req.body.limit <= 0){
         req.body.limit = 50
     }

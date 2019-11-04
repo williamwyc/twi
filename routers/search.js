@@ -8,6 +8,8 @@ var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 
 router.post('/',(req,res)=>{
+    console.log("Search: ")
+    console.log(req.body.timestamp, req.body.limit, req.body.q, req.body.username, req.body.following)
     //Default value
     if(req.body.timestamp == null || req.body.timestamp <= 0){
         req.body.timestamp = Date.now()
@@ -44,12 +46,14 @@ function search(timestamp,limit,q,username,following,db,req,res){
     if(username!=null){
         db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':username,'content':{$regex:q+".*"}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
             if(err){
+                console.log(err)
                 res.json({
                     status:"error",
                     error:err
                 });
             }
             else{
+                console.log(result)
                 res.json({
                     status:"OK",
                     items:result
@@ -60,6 +64,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
     else if(following){
         db.collection("follow").find({'follower':req.session.user}).toArray(function(err, result){
             if(err){
+                console.log(err)
                 res.json({
                     status:"error",
                     error:err
@@ -68,12 +73,14 @@ function search(timestamp,limit,q,username,following,db,req,res){
             else{
                 db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':{$in:result},'content':{$regex:q+".*"}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
                     if(err){
+                        console.log(err)
                         res.json({
                             status:"error",
                             error:err
                         });
                     }
                     else{
+                        console.log(result)
                         res.json({
                             status:"OK",
                             items:result
@@ -86,12 +93,14 @@ function search(timestamp,limit,q,username,following,db,req,res){
     else{
         db.collection("items").find({'timestamp':{$lt:timestamp*1000},'content':{$regex:q+".*"}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
             if(err){
+                console.log(err)
                 res.json({
                     status:"error",
                     error:err
                 });
             }
             else{
+                console.log(result)
                 res.json({
                     status:"OK",
                     items:result
