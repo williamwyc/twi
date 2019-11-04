@@ -71,11 +71,8 @@ router.get('/',jsonParser,(req,res)=>{
 });
 
 router.post('/',jsonParser,function(req,res){
-    console.log("Verify a user:")
-    console.log(data)
-    data = req.body //email: string, key: string
-    var db = req.app.locals.db
-    db.collection("users").find({'email': data.email}).toArray(function(err,result){
+    console.log("Verify a user:")//email: string, key: string
+    req.app.locals.db.collection("users").find({'email': req.body.email}).toArray(function(err,result){
         if(err){
             json = {
                 'status': "error",
@@ -94,8 +91,8 @@ router.post('/',jsonParser,function(req,res){
         }
         else{
             user = result[0]
-            if(result[0].key==data.key||data.key=='abracadabra'){
-                db.collection('users').update({'email': data.email},{ $set:
+            if(result[0].key==req.body.key||req.body.key=='abracadabra'){
+                req.app.locals.db.collection('users').update({'email': req.body.email},{ $set:
                     {
                         'verify': true
                     }
