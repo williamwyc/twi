@@ -2,15 +2,144 @@
 <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
+        var features=['.addItem','.searchItem','.getItem','.deleteItem','.getuserinforesult','.follow']
+        //No need sign in function
+        function getUserInfo(){
+            features.forEach(function(x){
+                $(x).hide();
+            });
+            var username=$('#usernamep').val();
+            var type=$('#userinfotype').val();
+            if(type=="profile"){
+                var url='/user/'+username;
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (d) {
+                        $('#getuserinforesult').show();
+                        if(d.status=="OK"){
+                            //window.location.replace("/");
+                            $('#getuserinforesult').text(JSON.stringify(d));
+                            //console.log(d);
+                        }else{
+                            $('#getuserinforesult').text("Get Profile Failed:"+JSON.stringify(d));
+                            //console.log("f:"+d);
+                        }
+                    }
+                });
+            }else{
+                var limit=$('#limitp').val()==null||$('#limitp').val()==undefined||$('#limitp').val()==0?50:$('#limitp').val();
+                if(limit>200){
+                    limit=200;
+                }
+                var url='/user/'+username+'/'+type+'?limit='+limit;
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (d) {
+                        $('#getuserinforesult').show();
+                        if(d.status=="OK"){
+                            //window.location.replace("/");
+                            $('#getuserinforesult').text(JSON.stringify(d));
+                            //console.log(d);
+                        }else{
+                            $('#getuserinforesult').text("Get Profile Failed:"+JSON.stringify(d));
+                            //console.log("f:"+d);
+                        }
+                    },
+                    error: function(request, errorThrown) { 
+                            $('#getuserinforesult').text(errorThrown);
+                    }       
+                    
+                });
+            }
+        }
         function addItem(){
-            $('.addItem').show();
+            $('#getuserinforesult').hide();
+            /*$('.addItem').show();
             $('.searchItem').hide();
             $('.getItem').hide();
+            $('.deleteItem').hide();*/
+            features.forEach(function(x){
+                if(x!='.addItem'){
+                    $(x).hide();
+                }
+            });
+            $('.addItem').show();
         }
         function searchItem(){
-            $('.searchItem').show();
+            $('#getuserinforesult').hide();
+            /*$('.searchItem').show();
             $('.addItem').hide();
             $('.getItem').hide();
+            $('.deleteItem').hide();*/
+            features.forEach(function(x){
+                if(x!='.searchItem'){
+                    $(x).hide();
+                }
+            });
+            $('.searchItem').show();
+        }
+        function getItem(){
+            $('#getuserinforesult').hide();
+            /*$('.addItem').hide();
+            $('.searchItem').hide();
+            $('.getItem').show();
+            $('.deleteItem').hide();*/
+            features.forEach(function(x){
+                if(x!='.getItem'){
+                    $(x).hide();
+                }
+            });
+            $('.getItem').show();
+        }
+        function deleteItem(){
+            $('#getuserinforesult').hide();
+            /*$('.addItem').hide();
+            $('.searchItem').hide();
+            $('.getItem').hide();
+            $('.deleteItem').show();*/
+            features.forEach(function(x){
+                if(x!='.deleteItem'){
+                    $(x).hide();
+                }
+            });
+            $('.deleteItem').show();
+        }
+        function follow(){
+            $('#getuserinforesult').hide();
+            features.forEach(function(x){
+                if(x!='.follow'){
+                    $(x).hide();
+                }
+            });
+            $('.follow').show();
+        }
+        $(document).ready(function() {
+            /*$('.addItem').hide();
+            $('.searchItem').hide();
+            $('.getItem').hide();
+            $('.deleteItem').hide();*/
+            features.forEach(function(x){
+                $(x).hide();
+            });
+        });
+        function logout(){
+            $.ajax({
+                type: 'post',
+                url: '/logout',
+                data: {},
+                success: function (d) {
+                    if(d.status=="OK"){
+                        //Clear storage
+                        localStorage.clear();
+                        window.location.replace("/");
+                        //$('#searchItemResult').text(d);
+                    }else{
+                        $('#indexErr').text("Log out Failed:"+JSON.stringify(d));
+                    }
+                }
+            });
         }
         function addItemSubmit(){
             var content=$('#content').val();
@@ -36,10 +165,13 @@
         function searchSubmit(){
             var timestamp=$('#timestamp').val();
             var limit=$('#limit').val();
+            var query=$('#query').val();
+            var username=$('#username').val()==''||$('#username').val()==undefined||$('#username').val()==null?null:$('#username').val();
+            var following=$('#following').val()=="true"?true:false;
             $.ajax({
                 type: 'post',
                 url: '/search',
-                data: {timestamp:timestamp,limit:limit},
+                data: {timestamp:timestamp,limit:limit,query:query,username:username,following:following},
                 success: function (d) {
                     if(d.status=="OK"){
                         //window.location.replace("/");
@@ -52,26 +184,7 @@
                 }
             });
         }
-        function logout(){
-            $.ajax({
-                type: 'post',
-                url: '/logout',
-                data: {},
-                success: function (d) {
-                    if(d.status=="OK"){
-                        window.location.replace("/");
-                        //$('#searchItemResult').text(d);
-                    }else{
-                        $('#indexErr').text("Log out Failed:"+JSON.stringify(d));
-                    }
-                }
-            });
-        }
-        function getItem(){
-            $('.addItem').hide();
-            $('.searchItem').hide();
-            $('.getItem').show();
-        }
+        
         function getItemSubmit(){
             var id=$('#id').val();
             var url='/item/'+id;
@@ -88,11 +201,48 @@
                 }
             });
         }
-        $(document).ready(function() {
-            $('.addItem').hide();
-            $('.searchItem').hide();
-            $('.getItem').hide();
-        });
+        function deleteItemSubmit(){
+            var id=$('#idd').val();
+            var url='/item/'+id;
+            $.ajax({
+                type: 'DELETE',
+                url: url,
+                success: function (d) {
+                    if(d.status=="OK"){
+                        //window.location.replace("/");
+                        $('#deleteItemResult').text(JSON.stringify(d));
+                    }else{
+                        $('#deleteItemResult').text("Delete Failed:"+JSON.stringify(d));
+                    }
+                },
+                error:function(request, errorThrown) { 
+                            $('#deleteItemResult').text(errorThrown);
+                    }     
+                
+            });
+        }
+        function followSubmit(){
+            var username=$('#usernamef').val();
+            var follow=$('#isfollow').val()=='true'?null:false;
+            console.log(follow);
+            $.ajax({
+                type: 'POST',
+                url:'/follow',
+                data:{username:username,follow:follow},
+                success: function (d) {
+                    if(d.status=="OK"){
+                        //window.location.replace("/");
+                        $('#followResult').text(JSON.stringify(d));
+                    }else{
+                        $('#followResult').text("Follow Failed:"+JSON.stringify(d));
+                    }
+                },
+                error:function(request, errorThrown) { 
+                            $('#followResult').text(errorThrown);
+                    } 
+                
+            });
+        }
     </script>
 </head>
 <body>
@@ -100,7 +250,25 @@
         <div id="indexErr"></div>
         <tr><h1>Welcome to Twitter! </h1></tr>
         <tr>
+            <td>Get User Info:</td> 
+            <td><input type="text" id="usernamep" placeholder="username"></td> 
+            <td>
+                    <select id="userinfotype">
+                            <option selected="selected" value="profile">Profile</option>
+                            <option value="posts">Posts</option>
+                            <option value="followers">Followers</option>
+                            <option value="following">Following</option>
+                    </select>
+            </td>
+            <td>Limit(optional):</td><td><input type="number" id="limitp"></td>
+                
+            <td><button onclick="getUserInfo()" type="text">Get User Info!</button></td>
+        </tr>
+        <tr>
                 <td><button onclick="getItem()" type="text">Get Item!</button></td>
+        </tr>
+        <tr>
+                <td><button onclick="deleteItem()" type="text">Delete Item!</button></td>
         </tr>
         <tr>
                 <td><button onclick="addItem()" type="text">Add Item!</button></td>
@@ -109,15 +277,26 @@
                 <td><button onclick="searchItem()" type="text">Search Item!</button></td>
         </tr>
         <tr>
+                <td><button onclick="follow()" type="text">Follow!</button></td>
+        </tr>
+        <tr>
                 <td><button onclick="logout()" type="text">Log Out!</button></td>
                
         </tr>
+        
     </table>
     <table class="getItem">
             <tr>
                     <td>ID:</td><td><input type="text" id="id"></td>
             </tr>
             <tr><td><button onclick="getItemSubmit()" type="text">View Tweet!</button></td></tr>
+            <tr><td></td></tr>
+    </table>
+    <table class="deleteItem">
+            <tr>
+                    <td>ID:</td><td><input type="text" id="idd"></td>
+            </tr>
+            <tr><td><button onclick="deleteItemSubmit()" type="text">Delete Tweet!</button></td></tr>
             <tr><td></td></tr>
     </table>
     <table class="addItem">
@@ -145,12 +324,40 @@
             <tr>
                 <td>Limit:</td><td><input type="number" id="limit"></td>
             </tr>
+            <tr>
+                <td>Query:</td><td><input type="text" id="query"></td>
+            </tr>
+            <tr>
+                <td>Username:</td><td><input type="text" id="username"></td>
+            </tr>
+            <td>Following:</td>
+            <td>
+                    <select id="following">
+                        <option selected="selected" value="true">True</option>
+                        <option value="false">False</option>
+                    </select>
+            </td>
             <tr><td><button onclick="searchSubmit()" type="text">Search!</button></td></tr>
             <tr><td></td></tr>
     </table>
+    <table class="follow">
+        <tr>
+            <td><input type="text" id="usernamef" placeholder="username"></td>
+            <td>
+                <select id="isfollow">
+                    <option selected="selected" value="true">True</option>
+                    <option value="false">False</option>
+                </select>
+            </td>
+            <td><button onclick="followSubmit()" type="text">Follow User!</button></td>
+        </tr>
+    </table>
+    <div class="getuserinfo"id="getuserinforesult"></div>
     <div class="getItem" id="getItemResult"></div>
+    <div class="deleteItem" id="deleteItemResult"></div>
     <div class="addItem" id="addItemResult"></div>
     <div class="searchItem" id="searchItemResult"></div>
+    <div class="follow" id="followResult"></div>
 </body>
 
 </html>

@@ -14,6 +14,8 @@
                 success: function (d) {
                     if(d.status=="OK"){
                         window.location.replace("/");
+                        //Put user name in local storage for future usage.
+                        localStorage.username=username;
                     }else{
                         console.log(d);
                         $('#loginErr').text("Login Failed:"+JSON.stringify(d));
@@ -23,6 +25,49 @@
         }
         function signUp(){
             window.location.replace("/adduser");
+        }
+        //No need sign in function
+        function getUserInfo(){
+            var username=$('#usernamep').val();
+            var type=$('#userinfotype').val();
+            if(type=="profile"){
+                var url='/user/'+username;
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (d) {
+                        if(d.status=="OK"){
+                            //window.location.replace("/");
+                            $('#getuserinforesult').text(JSON.stringify(d));
+                            //console.log(d);
+                        }else{
+                            $('#getuserinforesult').text("Get Profile Failed:"+JSON.stringify(d));
+                            //console.log("f:"+d);
+                        }
+                    }
+                });
+            }else{
+                var url='/user/'+username+'/'+type;
+                var limit=$('#limitp').val()==null||$('#limitp').val()==undefined||$('#limitp').val()==0?50:$('#limitp').val();
+                if(limit>200){
+                    limit=200;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data:{limit:limit},
+                    success: function (d) {
+                        if(d.status=="OK"){
+                            //window.location.replace("/");
+                            $('#getuserinforesult').text(JSON.stringify(d));
+                            //console.log(d);
+                        }else{
+                            $('#getuserinforesult').text("Get Profile Failed:"+JSON.stringify(d));
+                            //console.log("f:"+d);
+                        }
+                    }
+                });
+            }
         }
     </script>
 </head>
@@ -44,5 +89,25 @@
                 <td><button onclick="signUp()" type="text">Sign Up!(Add User)</button></td>
         </tr>
     </table>
+    <table>
+            <div id="indexErr"></div>
+            <tr><h1>Welcome to Twitter! </h1></tr>
+            <tr>
+                  <td>Get User Info:</td> 
+                  <td><input type="text" id="usernamep" placeholder="username"></td> 
+                  <td>
+                        <select id="userinfotype">
+                                <option selected="selected" value="profile">Profile</option>
+                                <option value="posts">Posts</option>
+                                <option value="followers">Followers</option>
+                                <option value="following">Following</option>
+                        </select>
+                  </td>
+                  <td>Limit(optional):</td><td><input type="number" id="limitp"></td>
+                    
+                  <td><button onclick="getUserInfo()" type="text">Get User Info!</button></td>
+            </tr>
+    </table>
+    <div class="getuserinforesult" id="getuserinforesult"></div>
 </body>
 </html>

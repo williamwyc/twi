@@ -12,9 +12,13 @@ router.post('/',jsonParser,function(req,res){
             'error': 'req.body.username is null'
         })
     }
-    if(req.body.follow == null){
+   
+    if(!req.body.follow){
         req.body.follow = true
+    }else{
+        req.body.follow= false
     }
+    var db = req.app.locals.db
     db.collection("users").find({'username':req.body.username}).toArray(function(err, result){
         if(err){
             res.json({
@@ -29,6 +33,7 @@ router.post('/',jsonParser,function(req,res){
             })
         }
         else{
+            
             if(req.body.follow){
                 db.collection("follow").find({'following': req.body.username, 'follower': req.session.user}).toArray(function(err, result){
                     if(err){
@@ -62,6 +67,7 @@ router.post('/',jsonParser,function(req,res){
                 })
             }
             else{
+                
                 db.collection("follow").remove({'following': req.body.username, 'follower': req.session.user}, function(err, obj){
                     if(err){
                         res.json({
