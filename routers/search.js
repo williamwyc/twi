@@ -55,6 +55,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
         query.$text = {$search: q}
     }
     if(username!=null){
+        console.log("Search a specific username")
         query.username = username
         console.log(query)
         db.collection("items").find(query).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
