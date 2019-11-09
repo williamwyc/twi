@@ -171,7 +171,7 @@
             $.ajax({
                 type: 'post',
                 url: '/search',
-                data: {timestamp:timestamp,limit:limit,query:query,username:username,following:following},
+                data: {timestamp:timestamp,limit:limit,q:query,username:username,following:following},
                 success: function (d) {
                     if(d.status=="OK"){
                         //window.location.replace("/");
