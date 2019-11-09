@@ -11,10 +11,10 @@ router.post('/',(req,res)=>{
     console.log("Search: ")
     console.log(req.body.timestamp, req.body.limit, req.body.q, req.body.username, req.body.following)
     //Default value
-    if(req.body.timestamp == null || req.body.timestamp <= 0){
+    if(req.body.timestamp == null || req.body.timestamp == '' || req.body.timestamp <= 0){
         req.body.timestamp = Date.now()
     }
-    if(req.body.limit == null || parseInt(req.body.limit) <= 0){
+    if(req.body.limit == null || req.body.limit == '' ||parseInt(req.body.limit) <= 0){
         req.body.limit = 25
     }
     else if(parseInt(req.body.limit) >= 100){
@@ -54,7 +54,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
     if (q != null && q != "") {
         query.$text = {$search: q}
     }
-    if(username!=null){
+    if(username!=null||username!=''){
         console.log("Search a specific username")
         query.username = username
         console.log(query)
