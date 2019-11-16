@@ -86,6 +86,7 @@ function addItem(req, res){
                     $inc: { retweeted: 1 }
                 })
             }
+            console.log("req",req.body)
             rejson = {
                 status:"OK",
                 id: req.body.itemId
