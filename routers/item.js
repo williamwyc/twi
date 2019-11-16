@@ -100,24 +100,65 @@ function getItem(id,db,res){
 
 function deleteItem(id,db,req,res){
     //DB operation: Delete contents of a single <id> item
-    db.collection("items").remove({'id': id, 'username': req.session.user}, function(err, obj){
+    db.collection("items").find({'id': id, 'username': req.session.user}).toArray(function(err,result){
         if(err){
             res.status(400).json({
                 status:"error",
                 error:err
             });
         }
-        else if(obj.result.n <= 0){
+        else if(result.length<=0){
             res.status(400).json({
                 status:"error",
                 error:"No such item"
             });
         }
-        else{
-            res.status(200).json({
-                status:"OK"
-            });
+        else if(result[0].media!=null && result[0].media.length>0){
+            db.collection("items").deleteMany({'id':{$in: result[0].media}},function(err,obj){
+                if(err){
+                    res.status(400).json({
+                        status:"error",
+                        error:err
+                    });
+                }
+                else{
+                    req.body.query= 'DELETE FROM medias WHERE id in (\'';
+                    for(var i=0; i< req.body.media.length; i++) {
+                        req.body.query += result[0].media[i] + "\', \'";
+                    }
+                    req.body.query += "\');"
+                    client.execute(req.body.query, {prepare :true}, function(err, result){
+                        if(err){
+                            res.status(400).json({
+                                status:"error",
+                                error:err
+                            })
+                        }
+                        else{
+                            res.status(200).json({
+                                status:"OK"
+                            })
+                        }
+                    });
+                }
+            })
         }
+        else{
+            db.collection("items").remove({'id': id, 'username': req.session.user}, function(err, obj){
+                if(err){
+                    res.status(400).json({
+                        status:"error",
+                        error:err
+                    });
+                }
+                else{
+                    res.status(200).json({
+                        status:"OK"
+                    });
+                }
+            })
+        }
+        
     })
 }
 
