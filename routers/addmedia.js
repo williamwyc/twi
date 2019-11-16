@@ -24,7 +24,7 @@ router.post('/',upload.single('content'),function(req,res){
     else{
         req.body.now = Date()
         req.body.id = req.session.user + req.body.now
-        req.app.locals.db.collection("medias").insertOne({'id':req.body.id, 'user':req.session.user}, function(err, result) {
+        req.app.locals.db.collection("medias").insertOne({'id':req.body.id, 'user':req.session.user,'used':false}, function(err, result) {
             if (err) {
                 console.log(err);
             }

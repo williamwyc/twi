@@ -24,9 +24,27 @@ router.post('/',(req,res)=>{
         });
     }
     else{
-        req.body.timestamp = Date.now()
-        req.body.itemId = req.session.user + req.timestamp
-        addItem(req, res);
+        if(req.body.media != null && req.body.media.length>0){
+            req.app.locals.db.collection("medias").find({'id':{$in:req.body.media},'used':false}).toArray(function(err,result){
+                if(err){
+                    res.json({
+                        status:"error",
+                        error:err
+                    });
+                }
+                else if(result.length!=req.body.media.length){
+                    res.json({
+                        status:"error",
+                        error:"Used media or Unexisted media"
+                    });
+                }
+                else{
+                    req.body.timestamp = Date.now()
+                    req.body.itemId = req.session.user + req.timestamp
+                    addItem(req, res);
+                }
+            })
+        }
     }
 });
 
@@ -53,6 +71,7 @@ function addItem(req, res){
             });
         }
         else{
+            req.app.locals.db.collection("medias").updateMany({'id':{$in:req.body.media}},{$set:{'used':true}})
             if(req.body.childtype == 'retweet'){
                 req.app.locals.db.collection("items").update({'id':req.body.parent},{
                     $inc: { retweeted: 1 }
