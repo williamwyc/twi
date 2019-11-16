@@ -34,4 +34,4 @@ router.get('/:id',multer().none(),function(req,res){
             }
         }
     })
-}
+})
