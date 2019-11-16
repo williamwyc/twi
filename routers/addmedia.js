@@ -49,3 +49,5 @@ router.post('/',upload.single('content'),function(req,res){
         });
     }
 })
+
+module.exports = router;
