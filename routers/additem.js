@@ -5,6 +5,8 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
 
 router.post('/',(req,res)=>{
+    console.log('Add an Item')
+    console.log(req.body.media)
     if(req.session.user == null){
         res.json({
             status:"error",
@@ -33,6 +35,8 @@ router.post('/',(req,res)=>{
                     });
                 }
                 else if(result.length!=req.body.media.length){
+                    console.log(req.body.media)
+                    console.log(result)
                     res.json({
                         status:"error",
                         error:"Used media or Unexisted media"
@@ -44,6 +48,9 @@ router.post('/',(req,res)=>{
                     addItem(req, res);
                 }
             })
+        }
+        else{
+            addItem(req, res)
         }
     }
 });
@@ -71,7 +78,9 @@ function addItem(req, res){
             });
         }
         else{
-            req.app.locals.db.collection("medias").updateMany({'id':{$in:req.body.media}},{$set:{'used':true}})
+            if(req.body.media.length>0){
+                req.app.locals.db.collection("medias").updateMany({'id':{$in:req.body.media}},{$set:{'used':true}})
+            }
             if(req.body.childtype == 'retweet'){
                 req.app.locals.db.collection("items").update({'id':req.body.parent},{
                     $inc: { retweeted: 1 }
