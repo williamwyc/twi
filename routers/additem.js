@@ -78,7 +78,7 @@ function addItem(req, res){
             });
         }
         else{
-            if(req.body.media.length>0){
+            if(req.body.media != null && req.body.media.length>0){
                 req.app.locals.db.collection("medias").updateMany({'id':{$in:req.body.media}},{$set:{'used':true}})
             }
             if(req.body.childtype == 'retweet'){
