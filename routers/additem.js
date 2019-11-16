@@ -35,7 +35,6 @@ router.post('/',(req,res)=>{
                     });
                 }
                 else if(result.length!=req.body.media.length){
-                    console.log(req.body.media)
                     console.log(result)
                     res.json({
                         status:"error",
@@ -50,6 +49,8 @@ router.post('/',(req,res)=>{
             })
         }
         else{
+            req.body.timestamp = Date.now()
+            req.body.itemId = req.session.user + req.timestamp
             addItem(req, res)
         }
     }
@@ -86,13 +87,10 @@ function addItem(req, res){
                     $inc: { retweeted: 1 }
                 })
             }
-            console.log("req",req)
-            rejson = {
+            res.json({
                 status:"OK",
                 id: req.body.itemId
-            }
-            console.log("returned json",rejson)
-            res.json(rejson);
+            });
         }
     })
     //DB operation:Post a new item
