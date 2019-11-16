@@ -1,11 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
-var path = require('path');
 var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
-var MongoClient = require('mongodb').MongoClient;
-var nodemailer = require('nodemailer');
 
 router.post('/',(req,res)=>{
     if(req.session.user == null){
@@ -20,23 +17,35 @@ router.post('/',(req,res)=>{
             error:"No content"
         });
     }
+    else if(req.body.parent == null && req.body.childtype != null){
+        res.json({
+            status:"error",
+            error:"Undefined parent"
+        });
+    }
     else{
-
-        addItem(req, res,Date.now());
+        req.body.timestamp = Date.now()
+        req.body.itemId = req.session.user + req.timestamp
+        addItem(req, res);
     }
 });
 
-function addItem(req, res,timestamp){
-    db.collection("items").insertOne({
-        _id: req.session.user + timestamp,
-        id: req.session.user + timestamp,
+function addItem(req, res){
+    req.app.locals.db.collection("items").insertOne({
+        _id: req.body.itemId,
+        id: req.body.itemId,
         username: req.session.user,
         property: {
-            likes: 0
+            likes: 0,
+            likers: []
         },
         retweeted: 0,
         content: req.body.content,
-        timestamp: timestamp},function(err, result){
+        timestamp: req.body.timestamp,
+        childtype: req.body.childtype,
+        parent: req.body.parent,
+        media: req.body.media
+    },function(err, result){
         if(err){
             res.json({
                 status:"error",
@@ -44,9 +53,14 @@ function addItem(req, res,timestamp){
             });
         }
         else{
+            if(childtype == 'retweet'){
+                req.app.locals.db.collection("items").update({'id':req.body.parent},{
+                    $inc: { retweeted: 1 }
+                })
+            }
             res.json({
                 status:"OK",
-                id: req.session.user + timestamp
+                id: req.body.itemId
             });
         }
     })

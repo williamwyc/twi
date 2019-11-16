@@ -5,31 +5,15 @@ var path = require('path');
 var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
-var nodemailer = require('nodemailer');
 
 router.post('/',(req,res)=>{
     console.log("Search: ")
-    console.log(req.body.timestamp, req.body.limit, req.body.q, req.body.username, req.body.following)
-    //Default value
-    if(req.body.timestamp == null || req.body.timestamp == '' || req.body.timestamp <= 0){
-        req.body.timestamp = Date.now()
-    }
-    if(req.body.limit == null || req.body.limit == '' ||parseInt(req.body.limit) <= 0){
-        req.body.limit = 25
-    }
-    else if(parseInt(req.body.limit) >= 100){
-        req.body.limit = 100
-    }
     if(req.body.following == null){
         if(req.session.user == null){
             res.json({
                 status:"error",
                 error:"Login First"
             });
-        }
-        else{
-            req.body.following = true
-            search(req.body.timestamp,req.body.limit,req.body.q,req.body.username,req.body.following,req.app.locals.db,req,res);
         }
     }
     else if(req.body.following == true){
@@ -39,84 +23,99 @@ router.post('/',(req,res)=>{
                 error:"Login First"
             });
         }
-        else{
-            search(req.body.timestamp,req.body.limit,req.body.q,req.body.username,req.body.following,req.app.locals.db,req,res);
+    }
+
+    //Default values
+    req.body.current = Date.now()
+    if(req.body.timestamp == null || req.body.timestamp == '' || req.body.timestamp <= 0){
+        req.body.timestamp = req.body.current
+    }
+    if(req.body.limit == null || req.body.limit == '' ||parseInt(req.body.limit) <= 0){
+        req.body.limit = 25
+    }
+    else if(parseInt(req.body.limit) >= 100){
+        req.body.limit = 100
+    }
+    if(req.body.rank == null){
+        req.body.rank = 'interest'
+    }
+    if(req.body.parent == null){
+        req.body.parent = 'none'
+    }
+    if(req.body.replies == null){
+        req.body.replies = true
+    }
+    if(req.body.hasMedia == null){
+        req.body.hasMedia = false
+    }
+
+    //query
+    req.body.query = {'timestamp':{$lt:req.body.timestamp*1000}}
+    if (req.body.q != null && req.body.q != "") {
+        req.body.query.$text = {$search: req.body.q}
+    }
+    if(req.body.username!=null&&req.body.username!=''){
+        req.body.query.username = username
+    }
+    else if(req.following){
+        req.app.locals.db.collection("follow").find({'follower':req.session.user}).toArray(function(err, result){
+            if(err){
+                console.log(err)
+                return res.json({
+                    status:"error",
+                    error:err
+                });
+            }
+            else{
+                req.body.query.username = {$in:result}
+            }
+        })
+    }
+    if(!req.body.replies){
+        req.body.query.parent = {$ne:'reply'}
+    }
+    else{
+        if(req.body.parent!=null && req.body.parent != 'none' && req.body.parent != ''){
+            req.body.query.parent = parent
         }
     }
-    else{
-        search(req.body.timestamp,req.body.limit,req.body.q,req.body.username,req.body.following,req.app.locals.db,req,res);
+    if(req.body.hasMedia){
+        req.body.query.media = {$ne:null}
     }
+    console.log(req.body.query)
+    itemSearch(req,res)
 });
 
-function search(timestamp,limit,q,username,following,db,req,res){
-    console.log(timestamp, limit, q, username, following)
-    var query = {'timestamp':{$lt:timestamp*1000}}
-    if (q != null && q != "") {
-        query.$text = {$search: q}
-    }
-    if(username!=null&&username!=''){
-        console.log("Search a specific username")
-        console.log(username)
-        query.username = username
-        console.log(query)
-        db.collection("items").find(query).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
-            if(err){
-                console.log(err)
-                res.json({
-                    status:"error",
-                    error:err
-                });
-            }
-            else{
-                console.log(result)
-                res.json({
-                    status:"OK",
-                    items:result
-                });
-            }
-        })
-    }
-    else if(following == true){
-        db.collection("follow").find({'follower':req.session.user}).toArray(function(err, result){
-            if(err){
-                console.log(err)
-                res.json({
-                    status:"error",
-                    error:err
-                });
-            }
-            else{
-                query.username = {$in:result}
-                console.log(query)
-                db.collection("items").find(query).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
-                    if(err){
-                        console.log(err)
-                        res.json({
-                            status:"error",
-                            error:err
-                        });
-                    }
-                    else{
-                        console.log(result)
-                        res.json({
-                            status:"OK",
-                            items:result
-                        });
-                    }
+function itemSearch(req,res){
+    req.app.locals.db.collection("items").find(req.body.query).sort({'timestamp':-1}).limit(parseInt(req.body.limit)).toArray(function(err, result){
+        if(err){
+            console.log(err)
+            res.json({
+                status:"error",
+                error:err
+            });
+        }
+        else{
+            if(req.body,rank == 'interest'){
+                result.sort(function(a,b){
+                    return (b.property.likes+b.retweeted)/(req.body.current-b.timestamp) - (a.property.likes+a.retweeted)/(req.body.current-a.timestamp)
                 })
-            }
-        })
-    }
-    else{
-        console.log(query)
-        db.collection("items").find(query).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
-            if(err){
-                console.log(err)
+                console.log(result)
                 res.json({
-                    status:"error",
-                    error:err
+                    status:"OK",
+                    items:result
                 });
             }
+            // else if(req.body.rank == 'time'){
+            //     result.sort(function(a,b){
+            //         return b.timestamp - a.timestamp
+            //     })
+            //     console.log(result)
+            //     res.json({
+            //         status:"OK",
+            //         items:result
+            //     });
+            // }
             else{
                 console.log(result)
                 res.json({
@@ -124,73 +123,7 @@ function search(timestamp,limit,q,username,following,db,req,res){
                     items:result
                 });
             }
-        })
-    }
-    // if(username!=null){
-    //     db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':username,'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
-    //         if(err){
-    //             console.log(err)
-    //             res.json({
-    //                 status:"error",
-    //                 error:err
-    //             });
-    //         }
-    //         else{
-    //             console.log(result)
-    //             res.json({
-    //                 status:"OK",
-    //                 items:result
-    //             });
-    //         }
-    //     })
-    // }
-    // else if(following){
-    //     db.collection("follow").find({'follower':req.session.user}).toArray(function(err, result){
-    //         if(err){
-    //             console.log(err)
-    //             res.json({
-    //                 status:"error",
-    //                 error:err
-    //             });
-    //         }
-    //         else{
-    //             db.collection("items").find({'timestamp':{$lt:timestamp*1000},'username':{$in:result},'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
-    //                 if(err){
-    //                     console.log(err)
-    //                     res.json({
-    //                         status:"error",
-    //                         error:err
-    //                     });
-    //                 }
-    //                 else{
-    //                     console.log(result)
-    //                     res.json({
-    //                         status:"OK",
-    //                         items:result
-    //                     });
-    //                 }
-    //             })
-    //         }
-    //     })
-    // }
-    // else{
-    //     db.collection("items").find({'timestamp':{$lt:timestamp*1000},'content':{$in:q}}).sort({'timestamp':-1}).limit(parseInt(limit)).toArray(function(err, result){
-    //         if(err){
-    //             console.log(err)
-    //             res.json({
-    //                 status:"error",
-    //                 error:err
-    //             });
-    //         }
-    //         else{
-    //             console.log(result)
-    //             res.json({
-    //                 status:"OK",
-    //                 items:result
-    //             });
-    //         }
-    //     })
-    // }
+        }
+    })
 }
-
 module.exports = router;

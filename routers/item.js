@@ -4,8 +4,6 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
-var MongoClient = require('mongodb').MongoClient;
-var nodemailer = require('nodemailer');
 
 router.get('/:id',(req,res)=>{
     console.log("Get item:")
@@ -18,6 +16,63 @@ router.delete('/:id',(req,res)=>{
     console.log(req.params)
     deleteItem(req.params.id,req.app.locals.db,req,res);
 });
+
+router.post('/:id/like',(req,res)=>{
+    console.log("Like item:")
+    console.log(req.params)
+    if(req.body.like == null){
+        req.body.like = true
+    }
+    likeItem(req.params.id,req,res)
+});
+
+function likeItem(id,req,res){
+    req.app.locals.db.collection("items").find({'id':id}).toArray(function(err,result){
+        if(err){
+            res.json({
+                status:"error",
+                error:err
+            });
+        }
+        else if(result.length<=0){
+            res.json({
+                status:"error",
+                error:"No such tweet"
+            });
+        }
+        else{
+            if(req.body.like){
+                if(result[0].property.likers.find(element => element == req.session.user) == null){
+                    req.app.locals.db.collection("items").update({'id':id},{$inc: { 'property.likes': 1 }})
+                    req.app.locals.db.collection("items").update({'id':id},{$push:{'property.likers':req.session.user}})
+                    res.json({
+                        status:"OK"
+                    });
+                }
+                else{
+                    res.json({
+                        status:"error",
+                        error:"Already liked"
+                    });
+                }
+            }else{
+                if(result[0].property.likers.find(element => element == req.session.user) == null){
+                    res.json({
+                        status:"error",
+                        error:"Unliked before"
+                    });
+                }
+                else{
+                    req.app.locals.db.collection("items").update({'id':id},{$inc: { 'property.likes': -1 }})
+                    req.app.locals.db.collection("items").update({'id':id},{$pull:{'property.likers':req.session.user}})
+                    res.json({
+                        status:"OK"
+                    });
+                }
+            }
+        }
+    })
+}
 
 function getItem(id,db,res){
     //DB operation:Get contents of a single <id> item

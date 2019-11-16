@@ -5,7 +5,28 @@ var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({extended: false})
 var path = require('path');
 var MongoClient = require('mongodb').MongoClient;
+var cassandra = require('cassandra-driver');
+var client = new cassandra.Client({contactPoints: ['130.245.168.194:9042'], localDataCenter:'datacenter1', keyspace: 'twi'})
 var cookieSession = require('cookie-session');
+
+client.connect(function(err, result) {
+  if(err)
+          console.log('Connection to cassandra error: '+err);
+  else{
+          console.log('Connection with cassandra established');
+          app.locals.client = client;
+          var tableQuery = "CREATE TABLE IF NOT EXISTS MEDIAS (id text PRIMARY KEY, content blob,type text);";
+          client.execute(tableQuery,[],function(err) {
+              if (!err) {
+                  console.log("new table created");
+              }
+              else{
+                  console.log("error in table creation: "+ err);
+              }
+          });
+  }
+});
+
 app.use(express.static(__dirname));
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -25,6 +46,8 @@ var item = require("./routers/item.js")
 var search = require("./routers/search.js")
 var user = require("./routers/user.js")
 var follow = require("./routers/follow.js")
+var addmedia = require("./routers/addmedia.js")
+var media = require("./routers/media.js")
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -37,6 +60,8 @@ app.use("/item", item)
 app.use("/search", search)
 app.use("/user",user)
 app.use("/follow",follow)
+app.use("/addmedia",addmedia)
+app.use("/media",media)
 app.use(express.static(__dirname));
 
 app.engine('html', require('ejs').renderFile);

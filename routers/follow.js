@@ -13,10 +13,8 @@ router.post('/',jsonParser,function(req,res){
         })
     }
    
-    if(!req.body.follow){
+    if(req.body.follow == null){
         req.body.follow = true
-    }else{
-        req.body.follow= false
     }
     var db = req.app.locals.db
     db.collection("users").find({'username':req.body.username}).toArray(function(err, result){
