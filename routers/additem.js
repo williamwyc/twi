@@ -86,10 +86,12 @@ function addItem(req, res){
                     $inc: { retweeted: 1 }
                 })
             }
-            res.json({
+            rejson = {
                 status:"OK",
                 id: req.body.itemId
-            });
+            }
+            console.log("returned json",rejson)
+            res.json(rejson);
         }
     })
     //DB operation:Post a new item
