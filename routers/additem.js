@@ -27,7 +27,7 @@ router.post('/',(req,res)=>{
     }
     else{
         if(req.body.media != null && req.body.media.length>0){
-            req.app.locals.db.collection("medias").find({'id':{$in:req.body.media},'used':false}).toArray(function(err,result){
+            req.app.locals.db.collection("medias").find({'id':{$in:req.body.media},'user':req.session.user,'used':false}).toArray(function(err,result){
                 if(err){
                     res.json({
                         status:"error",
