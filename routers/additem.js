@@ -85,7 +85,7 @@ function addItem(req, res){
             }
             if(req.body.childtype == 'retweet'){
                 req.app.locals.db.collection("items").update({'id':req.body.parent},{
-                    $inc: { retweeted: 1 }
+                    $inc: { 'retweeted': 1 }
                 })
             }
             res.json({
