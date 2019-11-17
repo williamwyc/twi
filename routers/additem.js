@@ -6,7 +6,6 @@ var jsonParser = bodyParser.json()
 
 router.post('/',(req,res)=>{
     console.log('Add an Item')
-    console.log(req.body.media)
     if(req.session.user == null){
         res.json({
             status:"error",

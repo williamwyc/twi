@@ -6,20 +6,17 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
 
 router.get('/:id',(req,res)=>{
-    console.log("Get item:")
-    console.log(req.params)
+    console.log("Get item:",req.params.id)
     getItem(req.params.id,db,res);
 });
 
 router.delete('/:id',(req,res)=>{
-    console.log("Delete item:")
-    console.log(req.params)
+    console.log("Delete item:",req.params.id)
     deleteItem(req.params.id,req.app.locals.db,req,res);
 });
 
 router.post('/:id/like',(req,res)=>{
-    console.log("Like item:")
-    console.log(req.params)
+    console.log("Like item:",req.params.id)
     if(req.body.like == null){
         req.body.like = true
     }
@@ -90,9 +87,22 @@ function getItem(id,db,res){
             });
         }
         else{
+            console.log(result[0])
             res.json({
                 status:"OK",
-                item:result[0]
+                item:{
+                    "id": result[0].id,
+                    "username": result[0].username,
+                    "property": {
+                        "likes": result[0].property.likes
+                    },
+                    "retweeted": result[0].property.retweeted,
+                    "content": result[0].content,
+                    "timestamp": result[0].timestamp,
+                    "childtype": result[0].childtype,
+                    "parent": result[0].parent,
+                    "media": result[0].media
+                }
             });
         }
     })
