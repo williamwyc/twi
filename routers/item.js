@@ -90,19 +90,7 @@ function getItem(id,db,res){
             console.log(result[0])
             res.json({
                 status:"OK",
-                item:{
-                    "id": result[0].id,
-                    "username": result[0].username,
-                    "property": {
-                        "likes": result[0].property.likes
-                    },
-                    "retweeted": result[0].property.retweeted,
-                    "content": result[0].content,
-                    "timestamp": result[0].timestamp,
-                    "childtype": result[0].childtype,
-                    "parent": result[0].parent,
-                    "media": result[0].media
-                }
+                item:result[0]
             });
         }
     })
