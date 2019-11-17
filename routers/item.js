@@ -7,7 +7,7 @@ var jsonParser = bodyParser.json()
 
 router.get('/:id',(req,res)=>{
     console.log("Get item:",req.params.id)
-    getItem(req.params.id,db,res);
+    getItem(req.params.id,req.app.locals.db,res);
 });
 
 router.delete('/:id',(req,res)=>{
