@@ -69,7 +69,7 @@ function addItem(req, res){
         retweeted: 0,
         content: req.body.content,
         timestamp: req.body.timestamp,
-        childType: req.body.childtype,
+        childType: req.body.childType,
         parent: req.body.parent,
         media: req.body.media
     },function(err, result){
