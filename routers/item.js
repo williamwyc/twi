@@ -121,10 +121,10 @@ function deleteItem(id,db,req,res){
                 }
                 else{
                     req.body.query= 'DELETE FROM medias WHERE id in (\'';
-                    for(var i=0; i< result[0].media.length; i++) {
+                    for(var i=0; i< result[0].media.length-1; i++) {
                         req.body.query += result[0].media[i] + "\', \'";
                     }
-                    req.body.query += "\');"
+                    req.body.query += result[0].media[result[0].media.length-1]+"\');"
                     req.app.locals.client.execute(req.body.query, {prepare :true}, function(err, result){
                         if(err){
                             res.status(400).json({
