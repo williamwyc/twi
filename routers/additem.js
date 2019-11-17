@@ -19,7 +19,7 @@ router.post('/',(req,res)=>{
             error:"No content"
         });
     }
-    else if(req.body.parent == null && req.body.childtype != null){
+    else if(req.body.parent == null && req.body.childType != null){
         res.json({
             status:"error",
             error:"Undefined parent"
@@ -83,7 +83,7 @@ function addItem(req, res){
             if(req.body.media != null && req.body.media.length>0){
                 req.app.locals.db.collection("medias").updateMany({'id':{$in:req.body.media}},{$set:{'used':true}})
             }
-            if(req.body.childtype == 'retweet'){
+            if(req.body.childType == 'retweet'){
                 req.app.locals.db.collection("items").update({'id':req.body.parent},{
                     $inc: { 'retweeted': 1 }
                 })
