@@ -76,7 +76,7 @@ router.post('/',(req,res)=>{
     }
     else{
         if(req.body.parent!=null && req.body.parent != 'none' && req.body.parent != ''){
-            req.body.query.parent = parent
+            req.body.query.parent = req.body.parent
         }
     }
     if(req.body.hasMedia){
