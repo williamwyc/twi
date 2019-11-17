@@ -49,6 +49,7 @@ router.post('/',(req,res)=>{
             })
         }
         else{
+            req.body.media = []
             req.body.timestamp = Date.now()
             req.body.itemId = uniqid()
             addItem(req, res)
