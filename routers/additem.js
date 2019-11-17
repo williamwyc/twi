@@ -3,6 +3,7 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
+var uniqid = require("uniqid");
 
 router.post('/',(req,res)=>{
     console.log('Add an Item')
@@ -42,14 +43,14 @@ router.post('/',(req,res)=>{
                 }
                 else{
                     req.body.timestamp = Date.now()
-                    req.body.itemId = req.session.user + req.timestamp
+                    req.body.itemId = uniqid()
                     addItem(req, res);
                 }
             })
         }
         else{
             req.body.timestamp = Date.now()
-            req.body.itemId = req.session.user + req.timestamp
+            req.body.itemId = uniqid()
             addItem(req, res)
         }
     }
