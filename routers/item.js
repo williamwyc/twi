@@ -125,7 +125,7 @@ function deleteItem(id,db,req,res){
                         req.body.query += result[0].media[i] + "\', \'";
                     }
                     req.body.query += "\');"
-                    client.execute(req.body.query, {prepare :true}, function(err, result){
+                    req.app.locals.client.execute(req.body.query, {prepare :true}, function(err, result){
                         if(err){
                             res.status(400).json({
                                 status:"error",
