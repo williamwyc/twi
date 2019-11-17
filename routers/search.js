@@ -80,7 +80,7 @@ router.post('/',(req,res)=>{
         }
     }
     if(req.body.hasMedia){
-        req.body.query.media = {$ne:null}
+        req.body.query.media = {$ne:[]}
     }
     console.log(req.body.query)
     itemSearch(req,res)
