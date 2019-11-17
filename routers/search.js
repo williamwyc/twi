@@ -96,7 +96,7 @@ function itemSearch(req,res){
             });
         }
         else{
-            if(req.body,rank == 'interest'){
+            if(req.body.rank == 'interest'){
                 result.sort(function(a,b){
                     return (b.property.likes+b.retweeted)/(req.body.current-b.timestamp) - (a.property.likes+a.retweeted)/(req.body.current-a.timestamp)
                 })
@@ -106,16 +106,6 @@ function itemSearch(req,res){
                     items:result
                 });
             }
-            // else if(req.body.rank == 'time'){
-            //     result.sort(function(a,b){
-            //         return b.timestamp - a.timestamp
-            //     })
-            //     console.log(result)
-            //     res.json({
-            //         status:"OK",
-            //         items:result
-            //     });
-            // }
             else{
                 console.log(result)
                 res.json({
