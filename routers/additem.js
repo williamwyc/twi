@@ -8,19 +8,19 @@ var uniqid = require("uniqid");
 router.post('/',(req,res)=>{
     console.log('Add an Item')
     if(req.session.user == null){
-        res.json({
+        res.status(400).json({
             status:"error",
             error:"Login Frist"
         });
     }
     else if(req.body.content == null){
-        res.json({
+        res.status(400).json({
             status:"error",
             error:"No content"
         });
     }
     else if(req.body.parent == null && req.body.childType != null){
-        res.json({
+        res.status(400).json({
             status:"error",
             error:"Undefined parent"
         });
@@ -29,14 +29,14 @@ router.post('/',(req,res)=>{
         if(req.body.media != null && req.body.media.length>0){
             req.app.locals.db.collection("medias").find({'id':{$in:req.body.media},'user':req.session.user,'used':false}).toArray(function(err,result){
                 if(err){
-                    res.json({
+                    res.status(500).json({
                         status:"error",
                         error:err
                     });
                 }
                 else if(result.length!=req.body.media.length){
                     console.log(result)
-                    res.json({
+                    res.status(400).json({
                         status:"error",
                         error:"Used media or Unexisted media"
                     });
@@ -74,7 +74,7 @@ function addItem(req, res){
         media: req.body.media
     },function(err, result){
         if(err){
-            res.json({
+            res.status(500).json({
                 status:"error",
                 error: err
             });
@@ -88,7 +88,7 @@ function addItem(req, res){
                     $inc: { 'retweeted': 1 }
                 })
             }
-            res.json({
+            res.status(200).json({
                 status:"OK",
                 id: req.body.itemId
             });

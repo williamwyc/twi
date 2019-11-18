@@ -7,7 +7,7 @@ router.post('/',jsonParser,function(req,res){
     console.log("Follow: ")
     console.log(req.session.user, req.body.username)
     if(req.session.user == null || req.body.username == null){
-        res.json({
+        res.status(500).json({
             'status': 'error',
             'error': 'req.body.username is null'
         })
@@ -19,13 +19,13 @@ router.post('/',jsonParser,function(req,res){
     var db = req.app.locals.db
     db.collection("users").find({'username':req.body.username}).toArray(function(err, result){
         if(err){
-            res.json({
+            res.status(500).json({
                 'status': 'error',
                 'error':err
             })
         }
         else if(result.length<=0){
-            res.json({
+            res.status(400).json({
                 'status': 'error',
                 'error':'User does not exist'
             })
@@ -35,13 +35,13 @@ router.post('/',jsonParser,function(req,res){
             if(req.body.follow){
                 db.collection("follow").find({'following': req.body.username, 'follower': req.session.user}).toArray(function(err, result){
                     if(err){
-                        res.json({
+                        res.status(500).json({
                             'status': 'error',
                             'error':err
                         })
                     }
                     else if(result.length>0){
-                        res.json({
+                        res.status(200).json({
                             'status': 'error',
                             'error':'Already followed'
                         })
@@ -53,11 +53,11 @@ router.post('/',jsonParser,function(req,res){
                                     'status': "error",
                                     'error': err
                                 }
-                                res.json(json)
+                                res.status(500).json(json)
                             }
                             else{
                                 json = {'status': "OK"}
-                                res.json(json)
+                                res.status(200).json(json)
                             }
                         })
                     }            
@@ -68,19 +68,19 @@ router.post('/',jsonParser,function(req,res){
                 
                 db.collection("follow").remove({'following': req.body.username, 'follower': req.session.user}, function(err, obj){
                     if(err){
-                        res.json({
+                        res.status(500).json({
                             status:"error",
                             error:err
                         });
                     }
                     else if(obj.result.n <= 0){
-                        res.json({
+                        res.status(400).json({
                             status:"error",
                             error:"Not followed"
                         });
                     }
                     else{
-                        res.json({
+                        res.status(200).json({
                             status:"OK"
                         });
                     }

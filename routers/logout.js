@@ -9,7 +9,7 @@ var nodemailer = require('nodemailer');
 
 router.post('/',jsonParser,function(req,res){
     req.session = null;
-    res.json({'status':'OK'});
+    res.status(200).json({'status':'OK'});
 })
 
 module.exports = router;

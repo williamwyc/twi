@@ -26,13 +26,13 @@ router.post('/:id/like',(req,res)=>{
 function likeItem(id,req,res){
     req.app.locals.db.collection("items").find({'id':id}).toArray(function(err,result){
         if(err){
-            res.json({
+            res.status(500).json({
                 status:"error",
                 error:err
             });
         }
         else if(result.length<=0){
-            res.json({
+            res.status(400).json({
                 status:"error",
                 error:"No such tweet"
             });
@@ -42,19 +42,19 @@ function likeItem(id,req,res){
                 if(result[0].property.likers.find(element => element == req.session.user) == null){
                     req.app.locals.db.collection("items").update({'id':id},{$inc: { 'property.likes': 1 }})
                     req.app.locals.db.collection("items").update({'id':id},{$push:{'property.likers':req.session.user}})
-                    res.json({
+                    res.status(200).json({
                         status:"OK"
                     });
                 }
                 else{
-                    res.json({
+                    res.status(400).json({
                         status:"error",
                         error:"Already liked"
                     });
                 }
             }else{
                 if(result[0].property.likers.find(element => element == req.session.user) == null){
-                    res.json({
+                    res.status(400).json({
                         status:"error",
                         error:"Unliked before"
                     });
@@ -62,7 +62,7 @@ function likeItem(id,req,res){
                 else{
                     req.app.locals.db.collection("items").update({'id':id},{$inc: { 'property.likes': -1 }})
                     req.app.locals.db.collection("items").update({'id':id},{$pull:{'property.likers':req.session.user}})
-                    res.json({
+                    res.status(200).json({
                         status:"OK"
                     });
                 }
@@ -75,20 +75,20 @@ function getItem(id,db,res){
     //DB operation:Get contents of a single <id> item
     db.collection("items").find({'id': id}).toArray(function(err, result){
         if(err){
-            res.json({
+            res.status(500).json({
                 status:"error",
                 error:err
             });
         }
         else if(result.length<=0){
-            res.json({
+            res.status(400).json({
                 status:"error",
                 error:"No such tweet"
             });
         }
         else{
             console.log(result[0])
-            res.json({
+            res.status(200).json({
                 status:"OK",
                 item:result[0]
             });
@@ -112,11 +112,6 @@ function deleteItem(id,db,req,res){
             });
         }
         else if(result[0].media!=null && result[0].media.length>0){
-            if(result[0].childType == 'retweet'){
-                db.collection("items").update({'id':result[0].parent},{
-                    $inc: { 'retweeted': -1 }
-                })
-            }
             db.collection("medias").deleteMany({'id':{$in: result[0].media}},function(err,obj){
                 if(err){
                     res.status(400).json({
@@ -157,11 +152,6 @@ function deleteItem(id,db,req,res){
             })
         }
         else{
-            if(result[0].childType == 'retweet'){
-                db.collection("items").update({'id':result[0].parent},{
-                    $inc: { 'retweeted': -1 }
-                })
-            }
             db.collection("items").remove({'id': id, 'username': req.session.user}, function(err, obj){
                 if(err){
                     res.status(400).json({

@@ -17,20 +17,18 @@ router.post('/',jsonParser,function(req,res){
     req.body._id = req.body.username
     db.collection("users").find({$or:[{'username': req.body.username},{'email': req.body.email}]}).toArray(function(err, result){
         if(err){
-            json = {
+            console.log(err)
+            res.status(500).json({
                 'status': "error",
                 'error': err
-            }
-            console.log(err)
-            res.json(json)
+            })
         }
         else if(result.length>=1){
-            json = {
+            console.log("Duplicate username or email")
+            res.status(400).json({
                 'status': "error",
                 'error': "Duplicate username or email"
-            }
-            console.log("Duplicate username or email")
-            res.json(json)
+            })
         }
         else{
             var transporter = nodemailer.createTransport({
@@ -49,26 +47,23 @@ router.post('/',jsonParser,function(req,res){
             transporter.sendMail(mailOptions, function(err, info){
                 console.log(mailOptions)
                 if (err) {
-                    json = {
+                    console.log(err)
+                    res.status(500).json({
                         'status': "error",
                         'error': err
-                    }
-                    console.log(err)
-                    res.json(json)
+                    })
                 } else {
                     console.log('Email sent: ' + info.response);
                     db.collection("users").insertOne(req.body, function(err, result){
                         if(err){
-                            json = {
+                            console.log(err)
+                            res.status(500).json({
                                 'status': "error",
                                 'error': err
-                            }
-                            console.log(err)
-                            res.json(json)
+                            })
                         }
                         else{
-                            json = {'status': "OK"}
-                            res.json(json)
+                            res.status(200).json({'status': "OK"})
                         }
                     })
                 }

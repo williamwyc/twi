@@ -16,40 +16,34 @@ router.post('/',jsonParser,function(req,res){
     var db = req.app.locals.db
     db.collection("users").find({'username': req.body.username}).toArray(function(err, result){
         if(err){
-            var json = {
+            res.status(500).json({
                 'status': "error",
                 'error': err
-            }
-            res.json(json)
+            })
         }
         else if(result.length<=0){
-            //json.error = "No such user"
-            var json = {
+            res.status(400).json({
                 'status': "error",
                 'error': "No such user"
-            }
-            res.json(json)
+            })
         }
         else{
             user = result[0]
             if(user.password != req.body.password){
-                var json = {
+                res.status(400).json({
                     'status': "error",
                     'error': "Wrong Password"
-                }
-                res.json(json)
+                })
             }
             else if(user.verify == false){
-                var json = {
+                res.status(400).json({
                     'status': "error",
                     'error': "Not verified"
-                }
-                res.json(json)
+                })
             }
             else{
                 req.session.user = req.body.username
-                var json = {'status': "OK"}
-                res.json(json)
+                res.status(200).json({'status': "OK"})
             }
         }
     })

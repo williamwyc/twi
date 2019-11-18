@@ -10,7 +10,7 @@ router.post('/',(req,res)=>{
     console.log("Search: ")
     if(req.body.following == null){
         if(req.session.user == null){
-            res.json({
+            res.status(400).json({
                 status:"error",
                 error:"Login First"
             });
@@ -18,7 +18,7 @@ router.post('/',(req,res)=>{
     }
     else if(req.body.following == true){
         if(req.session.user == null){
-            res.json({
+            res.status(400).json({
                 status:"error",
                 error:"Login First"
             });
@@ -61,7 +61,7 @@ router.post('/',(req,res)=>{
         req.app.locals.db.collection("follow").find({'follower':req.session.user}).toArray(function(err, result){
             if(err){
                 console.log(err)
-                return res.json({
+                return res.status(500).json({
                     status:"error",
                     error:err
                 });
@@ -90,7 +90,7 @@ function itemSearch(req,res){
     req.app.locals.db.collection("items").find(req.body.query).sort({'timestamp':-1}).limit(parseInt(req.body.limit)).toArray(function(err, result){
         if(err){
             console.log(err)
-            res.json({
+            res.status(500).json({
                 status:"error",
                 error:err
             });
@@ -101,14 +101,14 @@ function itemSearch(req,res){
                     return (b.property.likes+b.retweeted)/(req.body.current-b.timestamp) - (a.property.likes+a.retweeted)/(req.body.current-a.timestamp)
                 })
                 console.log(result)
-                res.json({
+                res.status(200).json({
                     status:"OK",
                     items:result
                 });
             }
             else{
                 console.log(result)
-                res.json({
+                res.status(200).json({
                     status:"OK",
                     items:result
                 });

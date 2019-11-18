@@ -74,12 +74,11 @@ router.post('/',jsonParser,function(req,res){
     console.log("Verify a user:")//email: string, key: string
     req.app.locals.db.collection("users").find({'email': req.body.email}).toArray(function(err,result){
         if(err){
-            json = {
+            console.log(err)
+            res.status(500).json({
                 'status': "error",
                 'error': err
-            }
-            console.log(err)
-            res.json(json)
+            })
         }
         else if(result.length == 1){
             console.log(result[0].key, req.body.key)
@@ -89,25 +88,22 @@ router.post('/',jsonParser,function(req,res){
                         'verify': true
                     }
                 })
-                json = {'status': "OK"}
-                res.json(json)
+                res.status(200).json({'status': "OK"})
             }
             else{
-                json = {
+                console.log("Wrong key")
+                res.status(400).json({
                     'status': "error",
                     'error': "Wrong key"
-                }
-                console.log("Wrong key")
-                res.json(json)
+                })
             }
         }
         else{
-            json = {
+            console.log("No such user")
+            res.status(400).json({
                 'status': "error",
                 'error': "No such user"
-            }
-            console.log("No such user")
-            res.json(json)
+            })
         }
     })
 })

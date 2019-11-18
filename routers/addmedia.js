@@ -44,7 +44,7 @@ router.post('/',upload.single('content'),function(req,res){
                     }
                 })
             } else {
-                res.json({'status':'OK', 'id':req.body.id});
+                res.status(200).json({'status':'OK', 'id':req.body.id});
             }
         });
     }
