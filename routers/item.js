@@ -112,7 +112,12 @@ function deleteItem(id,db,req,res){
             });
         }
         else if(result[0].media!=null && result[0].media.length>0){
-            db.collection("items").deleteMany({'id':{$in: result[0].media}},function(err,obj){
+            if(result[0].childType == 'retweet'){
+                db.collection("items").update({'id':result[0].parent},{
+                    $inc: { 'retweeted': -1 }
+                })
+            }
+            db.collection("medias").deleteMany({'id':{$in: result[0].media}},function(err,obj){
                 if(err){
                     res.status(400).json({
                         status:"error",
@@ -120,28 +125,43 @@ function deleteItem(id,db,req,res){
                     });
                 }
                 else{
-                    req.body.query= 'DELETE FROM medias WHERE id in (\'';
-                    for(var i=0; i< result[0].media.length-1; i++) {
-                        req.body.query += result[0].media[i] + "\', \'";
-                    }
-                    req.body.query += result[0].media[result[0].media.length-1]+"\');"
-                    req.app.locals.client.execute(req.body.query, {prepare :true}, function(err, result){
+                    db.collection("items").remove({'id': id, 'username': req.session.user}, function(err, obj){
                         if(err){
                             res.status(400).json({
                                 status:"error",
                                 error:err
-                            })
+                            });
                         }
                         else{
-                            res.status(200).json({
-                                status:"OK"
-                            })
+                            req.body.query= 'DELETE FROM medias WHERE id in (\'';
+                            for(var i=0; i< result[0].media.length-1; i++) {
+                                req.body.query += result[0].media[i] + "\', \'";
+                            }
+                            req.body.query += result[0].media[result[0].media.length-1]+"\');"
+                            req.app.locals.client.execute(req.body.query, {prepare :true}, function(err, result){
+                                if(err){
+                                    res.status(400).json({
+                                        status:"error",
+                                        error:err
+                                    })
+                                }
+                                else{
+                                    res.status(200).json({
+                                        status:"OK"
+                                    })
+                                }
+                            });
                         }
-                    });
+                    })
                 }
             })
         }
         else{
+            if(result[0].childType == 'retweet'){
+                db.collection("items").update({'id':result[0].parent},{
+                    $inc: { 'retweeted': -1 }
+                })
+            }
             db.collection("items").remove({'id': id, 'username': req.session.user}, function(err, obj){
                 if(err){
                     res.status(400).json({
