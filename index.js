@@ -79,13 +79,13 @@ app.get('/', function (req, res) {
   
 });
 
-MongoClient.connect('mongodb://localhost:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
+MongoClient.connect('mongodb://130.245.168.51:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
   if (err){
     throw err;
   }
   console.log('Mongodb Connected');
   app.locals.db = client.db('twi');
-  app.listen(3000, function(){
+  app.listen(80, function(){
     console.log("Listening...")
   })
 });

@@ -32,7 +32,7 @@ router.post('/',jsonParser,function(req,res){
         }
         else{
             var transporter = nodemailer.createTransport({
-                host: 'localhost',
+                host: '130.245.168.51',
                 port: 25,
                 tls: {
                     rejectUnauthorized: false
@@ -45,7 +45,6 @@ router.post('/',jsonParser,function(req,res){
                 text: "Hello! Please verify your email.<" + "http://" + req.get('host') + "/verify?email=" + req.body.email + "&key=" + req.body.key + ">" + 'key: <' +req.body.key + '>',
             }
             transporter.sendMail(mailOptions, function(err, info){
-                console.log(mailOptions)
                 if (err) {
                     console.log(err)
                     res.status(500).json({
