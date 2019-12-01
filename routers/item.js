@@ -38,7 +38,7 @@ function likeItem(id,req,res){
             });
         }
         else{
-            if(req.body.like){
+            if(req.body.like==true||req.body.like=="true"){
                 if(result[0].property.likers.find(element => element == req.session.user) == null){
                     req.app.locals.db.collection("items").update({'id':id},{$inc: { 'property.likes': 1 }})
                     req.app.locals.db.collection("items").update({'id':id},{$push:{'property.likers':req.session.user}})

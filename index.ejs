@@ -2,7 +2,7 @@
 <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
-        var features=['.addItem','.searchItem','.getItem','.deleteItem','.getuserinforesult','.follow']
+        var features=['.addItem','.searchItem','.getItem','.deleteItem','.getuserinforesult','.follow','.like','.addMedia','.getMedia'];
         //No need sign in function
         function getUserInfo(){
             features.forEach(function(x){
@@ -124,6 +124,46 @@
                 $(x).hide();
             });
         });
+
+        function like(){
+            $('#getuserinforesult').hide();
+            /*$('.addItem').hide();
+            $('.searchItem').hide();
+            $('.getItem').show();
+            $('.deleteItem').hide();*/
+            features.forEach(function(x){
+                if(x!='.like'){
+                    $(x).hide();
+                }
+            });
+            $('.like').show();
+        }
+        function addMedia(){
+            $('#getuserinforesult').hide();
+            /*$('.addItem').hide();
+            $('.searchItem').hide();
+            $('.getItem').show();
+            $('.deleteItem').hide();*/
+            features.forEach(function(x){
+                if(x!='.addMedia'){
+                    $(x).hide();
+                }
+            });
+            $('.addMedia').show();
+        }
+        function getMedia(){
+            $('#getuserinforesult').hide();
+            /*$('.addItem').hide();
+            $('.searchItem').hide();
+            $('.getItem').show();
+            $('.deleteItem').hide();*/
+            features.forEach(function(x){
+                if(x!='.getMedia'){
+                    $(x).hide();
+                }
+            });
+            $('.getMedia').show();
+        }
         function logout(){
             $.ajax({
                 type: 'post',
@@ -141,6 +181,7 @@
                 }
             });
         }
+        
         function addItemSubmit(){
             var content=$('#content').val();
             var childtype=$('#childtype').val()=="null"?null:$('#childtype').val();
@@ -243,6 +284,114 @@
                 
             });
         }
+        function likeSubmit(){
+            var id=$('#lid').val();
+            var like=$('#isliked').val()=='true'?true:false;
+            console.log(like);
+            $.ajax({
+                type: 'POST',
+                url:'/item/'+id+'/like',
+                data:{like:like},
+                success: function (d) {
+                    if(d.status=="OK"){
+                        //window.location.replace("/");
+                        $('#likeResult').text(JSON.stringify(d));
+                    }else{
+                        $('#likeResult').text("Like Failed:"+JSON.stringify(d));
+                    }
+                },
+                error:function(request, errorThrown) { 
+                            $('#likeResult').text("Like Failed:"+JSON.stringify(errorThrown)+", "+JSON.stringify(request));
+                    } 
+                
+            });
+        }
+        /*function addMediaSubmit(){
+            var content=$('#content').val();
+            
+            console.log(content);
+            $.ajax({
+                type: 'POST',
+                url:'/addmedia',
+                data:{content:content},
+                success: function (d) {
+                    if(d.status=="OK"){
+                        //window.location.replace("/");
+                        $('#addMediaResult').text(JSON.stringify(d));
+                    }else{
+                        $('#addMediaResult').text("Add Media Failed:"+JSON.stringify(d));
+                    }
+                },
+                error:function(request, errorThrown) { 
+                            $('#addMediaResult').text("Add Media Failed:"+JSON.stringify(errorThrown)+", "+JSON.stringify(request));
+                    } 
+                
+            });
+            var formData = new FormData();
+            formData.append('file', $('#content').prop('files'));
+            console.log(formData);
+            $.ajax({
+                url : '/addmedia',
+                type : 'POST',
+                data : formData,
+                processData: false,
+                contentType: false,
+                success: function (d) {
+                    if(d.status=="OK"){
+                        //window.location.replace("/");
+                        $('#addMediaResult').text(JSON.stringify(d));
+                    }else{
+                        $('#addMediaResult').text("Add Media Failed:"+JSON.stringify(d));
+                    }
+                },
+                error:function(request, errorThrown) { 
+                        $('#addMediaResult').text("Add Media Failed:"+JSON.stringify(errorThrown)+", "+JSON.stringify(request));
+                } 
+            });
+        }*/
+        $(document).on('submit', '#Form', function(e){
+            e.preventDefault();
+
+            var form_data = new FormData($('#Form')[0]);
+            $.ajax({
+                type:'POST',
+                url:'/addmedia',
+                processData: false,
+                contentType: false,
+                async: false,
+                cache: false,
+                data : form_data,
+                success: function(response){
+                    console.log(response);
+                },
+                error:function(request, errorThrown) { 
+                    console.log(request);
+                    console.log(errorThrown);
+                        $('#addMediaResult').text("Add Media Failed:"+JSON.stringify(errorThrown)+", "+JSON.stringify(request));
+                } 
+            });
+        });
+        function getMediaSubmit(){
+            var id=$("#fileId").val();
+            $.ajax({
+                type: 'GET',
+                url: '/media/'+id,
+                success: function (d) {
+                    if(d.status==200){
+                        //window.location.replace("/");
+                        $('#getMediaResult').text(JSON.stringify(d));
+                        //console.log(d);
+                    }else{
+                        $('#getMediaResult').text(JSON.stringify(d));
+                        //console.log("f:"+d);
+                    }
+                    console.log(Object.keys(d));
+                },
+                error:function(d){
+                    console.log(d);
+                }
+            });
+        }
     </script>
 </head>
 <body>
@@ -278,6 +427,15 @@
         </tr>
         <tr>
                 <td><button onclick="follow()" type="text">Follow!</button></td>
+        </tr>
+        <tr>
+                <td><button onclick="like()" type="text">Like!</button></td>
+        </tr>
+        <tr>
+                <td><button onclick="addMedia()" type="text">Add Media!</button></td>
+        </tr>
+        <tr>
+                <td><button onclick="getMedia()" type="text">Get Media!</button></td>
         </tr>
         <tr>
                 <td><button onclick="logout()" type="text">Log Out!</button></td>
@@ -352,12 +510,50 @@
             <td><button onclick="followSubmit()" type="text">Follow User!</button></td>
         </tr>
     </table>
+   
+    <table class="like">
+            <tr>
+                    <td>ID:</td><td><input type="text" id="lid"></td>
+            </tr>
+            <td>
+                <select id="isliked">
+                    <option selected="selected" value="true">True</option>
+                    <option value="false">False</option>
+                </select>
+            </td>
+            <tr><td><button onclick="likeSubmit()" type="text">Like!</button></td></tr>
+            <tr><td></td></tr>
+    </table>
+    <table class="addMedia">
+        <tr>
+            <!--<td><input type="file" id="content"></td>
+            
+            <td><button onclick="addMediaSubmit()" type="text">Add Media!</button></td>-->
+            <td>
+                <form method="post" id="Form" enctype="multipart/form-data">
+                    <input id="image_file" type="file" name="content">
+                    <input type="submit" value="submit">
+                </form>
+            </td>
+        </tr>
+        
+    </table>
+    <table class="getMedia">
+            <tr>
+                    <td>Get Media:</td>
+                    <td><input type="text" id="fileId" placeholder="File Id"></td> 
+                    <td><button onclick="getMediaSubmit()" type="text">Get Media!</button></td>
+                </tr>
+    </table>
     <div class="getuserinfo"id="getuserinforesult"></div>
     <div class="getItem" id="getItemResult"></div>
     <div class="deleteItem" id="deleteItemResult"></div>
     <div class="addItem" id="addItemResult"></div>
     <div class="searchItem" id="searchItemResult"></div>
     <div class="follow" id="followResult"></div>
+    <div class="like" id="likeResult"></div>
+    <div class="addMedia" id="addMediaResult"></div>
+    <div class="getMedia" id="getMediaResult"></div>
 </body>
 
 </html>

@@ -15,12 +15,16 @@
                     if(d.status=="OK"){
                         window.location.replace("/");
                         //Put user name in local storage for future usage.
+                        console.log(d);
                         localStorage.username=username;
                     }else{
                         console.log(d);
                         $('#loginErr').text("Login Failed:"+JSON.stringify(d));
                     }
-                }
+                },
+                error: function(request, errorThrown) { 
+                    $('#loginErr').text("Login Failed2:"+JSON.stringify(errorThrown)+","+JSON.stringify(request));
+                }    
             });
         }
         function signUp(){
@@ -69,6 +73,51 @@
                 });
             }
         }
+
+        function getMedia(){
+            var id=$("#fileId").val();
+            $.ajax({
+                type: 'GET',
+                url: '/media/'+id,
+                success: function (d) {
+                    if(d.status==200){
+                        //window.location.replace("/");
+                        $('#getMediaResult').text(JSON.stringify(d));
+                        //console.log(d);
+                    }else{
+                        $('#getMediaResult').text(JSON.stringify(d));
+                        //console.log("f:"+d);
+                    }
+                    console.log(Object.keys(d));
+                },
+                error:function(d){
+                    console.log(d);
+                }
+            });
+        }
+        function verify(){
+            var email=$("#emailv").val();
+            var key=$("#keyv").val();
+            $.ajax({
+                type: 'POST',
+                url: '/verify',
+                data: {email:email,key:key},
+                success: function (d) {
+                    if(d.status==200){
+                        //window.location.replace("/");
+                        $('#verifyResult').text(JSON.stringify(d));
+                        //console.log(d);
+                    }else{
+                        $('#verifyResult').text(JSON.stringify(d));
+                        //console.log("f:"+d);
+                    }
+                    console.log(Object.keys(d));
+                },
+                error:function(d){
+                    console.log(d);
+                }
+            });
+        }
     </script>
 </head>
 <body>
@@ -107,7 +156,20 @@
                     
                   <td><button onclick="getUserInfo()" type="text">Get User Info!</button></td>
             </tr>
+            <tr>
+                <td>Get Media:</td>
+                <td><input type="text" id="fileId" placeholder="File Id"></td> 
+                <td><button onclick="getMedia()" type="text">Get Media!</button></td>
+            </tr>
+            <tr>
+                <td>Verify:</td>
+                <td><input type="text" id="emailv" placeholder="Email"></td> 
+                <td><input type="text" id="keyv" placeholder="Key"></td> 
+                <td><button onclick="verify()" type="text">Verify!</button></td>
+            </tr>
     </table>
+    <div class="verifyResult" id="verifyResult"></div>
     <div class="getuserinforesult" id="getuserinforesult"></div>
+    <div class="getMediaResult" id="getMediaResult"></div>
 </body>
 </html>

@@ -71,7 +71,7 @@ router.get('/',jsonParser,(req,res)=>{
 });
 
 router.post('/',jsonParser,function(req,res){
-    console.log("Verify a user:")//email: string, key: string
+    console.log("Verify a user:"+ req.body.email)//email: string, key: string
     req.app.locals.db.collection("users").find({'email': req.body.email}).toArray(function(err,result){
         if(err){
             console.log(err)
