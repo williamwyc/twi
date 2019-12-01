@@ -7,7 +7,6 @@ var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
 
 router.post('/',(req,res)=>{
-    console.log("Search: ")
     if(req.body.following == null){
         if(req.session.user == null){
             res.status(400).json({
@@ -82,7 +81,6 @@ router.post('/',(req,res)=>{
     if(req.body.hasMedia){
         req.body.query.media = {$ne:[]}
     }
-    console.log(req.body.query)
     itemSearch(req,res)
 });
 
@@ -100,14 +98,12 @@ function itemSearch(req,res){
                 result.sort(function(a,b){
                     return (b.property.likes+b.retweeted)/(req.body.current-b.timestamp) - (a.property.likes+a.retweeted)/(req.body.current-a.timestamp)
                 })
-                console.log(result)
                 res.status(200).json({
                     status:"OK",
                     items:result
                 });
             }
             else{
-                console.log(result)
                 res.status(200).json({
                     status:"OK",
                     items:result

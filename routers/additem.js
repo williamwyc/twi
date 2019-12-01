@@ -6,7 +6,6 @@ var jsonParser = bodyParser.json()
 var uniqid = require("uniqid");
 
 router.post('/',(req,res)=>{
-    console.log('Add an Item')
     if(req.session.user == null){
         res.status(400).json({
             status:"error",
@@ -35,7 +34,6 @@ router.post('/',(req,res)=>{
                     });
                 }
                 else if(result.length!=req.body.media.length){
-                    console.log(result)
                     res.status(400).json({
                         status:"error",
                         error:"Used media or Unexisted media"
@@ -74,6 +72,7 @@ function addItem(req, res){
         media: req.body.media
     },function(err, result){
         if(err){
+            console.log(err)
             res.status(500).json({
                 status:"error",
                 error: err

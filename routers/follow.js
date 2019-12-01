@@ -4,8 +4,6 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json()
 
 router.post('/',jsonParser,function(req,res){
-    console.log("Follow: ")
-    console.log(req.session.user, req.body.username)
     if(req.session.user == null || req.body.username == null){
         res.status(500).json({
             'status': 'error',
@@ -19,6 +17,7 @@ router.post('/',jsonParser,function(req,res){
         var db = req.app.locals.db
         db.collection("users").find({'username':req.body.username}).toArray(function(err, result){
             if(err){
+                console.log(err)
                 res.status(500).json({
                     'status': 'error',
                     'error':err
@@ -34,6 +33,7 @@ router.post('/',jsonParser,function(req,res){
                 if(req.body.follow){
                     db.collection("follow").find({'following': req.body.username, 'follower': req.session.user}).toArray(function(err, result){
                         if(err){
+                            console.log(err)
                             res.status(500).json({
                                 'status': 'error',
                                 'error':err
@@ -48,15 +48,14 @@ router.post('/',jsonParser,function(req,res){
                         else{
                             db.collection("follow").insertOne({'following': req.body.username, 'follower': req.session.user}, function(err, result){
                                 if(err){
-                                    json = {
+                                    console.log(err)
+                                    res.status(500).json({
                                         'status': "error",
                                         'error': err
-                                    }
-                                    res.status(500).json(json)
+                                    })
                                 }
                                 else{
-                                    json = {'status': "OK"}
-                                    res.status(200).json(json)
+                                    res.status(200).json({'status': "OK"})
                                 }
                             })
                         }            
@@ -67,6 +66,7 @@ router.post('/',jsonParser,function(req,res){
                     
                     db.collection("follow").remove({'following': req.body.username, 'follower': req.session.user}, function(err, obj){
                         if(err){
+                            console.log(err)
                             res.status(500).json({
                                 status:"error",
                                 error:err

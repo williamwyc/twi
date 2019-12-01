@@ -10,10 +10,9 @@ var nodemailer = require('nodemailer');
 
 //Gets user profile information for <username> (user doesn’t need to be signed in)
 router.get('/:username',(req,res)=>{
-    console.log("Get User:")
-    console.log(req.params.username)
     req.app.locals.db.collection("users").find({'username':req.params.username}).toArray(function(err, result){
         if(err){
+            console.log(err)
             res.status(500).json({
                 status:"error",
                 error:err
@@ -29,6 +28,7 @@ router.get('/:username',(req,res)=>{
             email = result[0].email
             req.app.locals.db.collection("follow").find({'following': req.params.username}).toArray(function(err, result){
                 if(err){
+                    console.log(err)
                     res.status(500).json({
                         status:"error",
                         error:err
@@ -38,6 +38,7 @@ router.get('/:username',(req,res)=>{
                     var followers = result.length
                     req.app.locals.db.collection("follow").find({'follower': req.params.username}).toArray(function(err, result){
                         if(err){
+                            console.log(err)
                             res.status(500).json({
                                 status:"error",
                                 error:err
@@ -62,8 +63,6 @@ router.get('/:username',(req,res)=>{
 });
 
 router.get('/:username/posts',jsonParser,function(req,res){
-    console.log("Get Posts:")
-    console.log(req.params.username,req.query.limit)
     if(req.query.limit == null || req.query.limit <= 0){
         req.query.limit = 50
     }
@@ -72,6 +71,7 @@ router.get('/:username/posts',jsonParser,function(req,res){
     }
     req.app.locals.db.collection("items").find({'username': req.params.username}).sort({'timestamp':-1}).limit(parseInt(req.query.limit)).toArray(function(err, result){
         if(err){
+            console.log(err)
             res.status(500).json({
                 status:"error",
                 error:err
@@ -92,8 +92,6 @@ router.get('/:username/posts',jsonParser,function(req,res){
 })
 
 router.get('/:username/followers',jsonParser,function(req,res){
-    console.log("Get Followers:")
-    console.log(req.params.username,req.query.limit)
     if(req.query.limit == null || req.query.limit <= 0){
         req.query.limit = 50
     }
@@ -102,6 +100,7 @@ router.get('/:username/followers',jsonParser,function(req,res){
     }
     req.app.locals.db.collection("follow").find({"following":req.params.username}).limit(parseInt(req.query.limit)).toArray(function(err,result){
         if(err){
+            console.log(err)
             res.status(500).json({
                 status:"error",
                 error:err
@@ -121,8 +120,6 @@ router.get('/:username/followers',jsonParser,function(req,res){
 })
 
 router.get('/:username/following',jsonParser,function(req,res){
-    console.log("Get Following:")
-    console.log(req.params.username,req.query.limit)
     if(req.query.limit == null || req.query.limit <= 0){
         req.query.limit = 50
     }
@@ -132,6 +129,7 @@ router.get('/:username/following',jsonParser,function(req,res){
     var db = req.app.locals.db
     db.collection("follow").find({"follower":req.params.username}).limit(parseInt(req.query.limit)).toArray(function(err,result){
         if(err){
+            console.log(err)
             res.status(500).json({
                 status:"error",
                 error:err

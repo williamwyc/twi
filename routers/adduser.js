@@ -9,8 +9,6 @@ router.get('/',(req,res)=>{
 })
 router.post('/',jsonParser,function(req,res){
     // username: string, email: string, password: string
-    console.log("Add User: ")
-    console.log(req.body)
     db = req.app.locals.db //access db
     req.body.key = Math.floor((Math.random() * 899999) + 100000);
     req.body.verify = false
@@ -24,7 +22,6 @@ router.post('/',jsonParser,function(req,res){
             })
         }
         else if(result.length>=1){
-            console.log("Duplicate username or email")
             res.status(400).json({
                 'status': "error",
                 'error': "Duplicate username or email"
@@ -52,7 +49,6 @@ router.post('/',jsonParser,function(req,res){
                         'error': err
                     })
                 } else {
-                    console.log('Email sent: ' + info.response);
                     db.collection("users").insertOne(req.body, function(err, result){
                         if(err){
                             console.log(err)

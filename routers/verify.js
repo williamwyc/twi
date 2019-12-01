@@ -71,7 +71,6 @@ router.get('/',jsonParser,(req,res)=>{
 });
 
 router.post('/',jsonParser,function(req,res){
-    console.log("Verify a user:"+ req.body.email)//email: string, key: string
     req.app.locals.db.collection("users").find({'email': req.body.email}).toArray(function(err,result){
         if(err){
             console.log(err)
@@ -81,7 +80,6 @@ router.post('/',jsonParser,function(req,res){
             })
         }
         else if(result.length == 1){
-            console.log(result[0].key, req.body.key)
             if(result[0].key==req.body.key||req.body.key=='abracadabra'){
                 req.app.locals.db.collection('users').update({'email': req.body.email},{ $set:
                     {
@@ -91,7 +89,6 @@ router.post('/',jsonParser,function(req,res){
                 res.status(200).json({'status': "OK"})
             }
             else{
-                console.log("Wrong key")
                 res.status(400).json({
                     'status': "error",
                     'error': "Wrong key"
@@ -99,7 +96,6 @@ router.post('/',jsonParser,function(req,res){
             }
         }
         else{
-            console.log("No such user")
             res.status(400).json({
                 'status': "error",
                 'error': "No such user"

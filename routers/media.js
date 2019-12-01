@@ -11,6 +11,7 @@ var upload = multer({dest:'upload/',storage:storage})
 router.get('/:id',multer().none(),function(req,res){
     req.app.locals.client.execute('SELECT * FROM MEDIAS WHERE id = ?',[req.params.id],{prepare:true},function(err,result){
         if(err){
+            console.log(err)
             res.status(400).json({
                 'status': 'error',
                 'error': err
