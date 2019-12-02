@@ -107,7 +107,7 @@ router.post('/',(req,res)=>{
     request({  
         url: "http://192.168.122.28/search",
         method: 'POST',
-        json: data
+        json: req.body
     }, 
     function(err, response, body) {  
         if(err){
