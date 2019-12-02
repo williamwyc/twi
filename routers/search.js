@@ -7,7 +7,6 @@ var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
 
 router.post('/',(req,res)=>{
-    console.log("Search: ")
     if(req.body.following == null){
         if(req.session.user == null){
             res.status(400).json({
