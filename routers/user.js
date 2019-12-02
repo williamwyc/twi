@@ -6,6 +6,7 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
+var request = require('request');
 
 
 //Gets user profile information for <username> (user doesn’t need to be signed in)
@@ -63,32 +64,48 @@ router.get('/:username',(req,res)=>{
 });
 
 router.get('/:username/posts',jsonParser,function(req,res){
-    if(req.query.limit == null || req.query.limit <= 0){
-        req.query.limit = 50
-    }
-    else if(req.query.limit >200){
-        req.query.limit = 200
-    }
-    req.app.locals.db.collection("items").find({'username': req.params.username}).sort({'timestamp':-1}).limit(parseInt(req.query.limit)).toArray(function(err, result){
-        if(err){
-            console.log(err)
-            res.status(500).json({
-                status:"error",
-                error:err
-            });
-        }
-        else{
-            items = []
-            for(var i = 0; i<result.length; i++){
-                items.push(result[i].id)
-            }
-            res.status(200).json({
-                status: "OK",
-                items: items
-            })
-        }
+    // if(req.query.limit == null || req.query.limit <= 0){
+    //     req.query.limit = 50
+    // }
+    // else if(req.query.limit >200){
+    //     req.query.limit = 200
+    // }
+    // req.app.locals.db.collection("items").find({'username': req.params.username}).sort({'timestamp':-1}).limit(parseInt(req.query.limit)).toArray(function(err, result){
+    //     if(err){
+    //         console.log(err)
+    //         res.status(500).json({
+    //             status:"error",
+    //             error:err
+    //         });
+    //     }
+    //     else{
+    //         items = []
+    //         for(var i = 0; i<result.length; i++){
+    //             items.push(result[i].id)
+    //         }
+    //         res.status(200).json({
+    //             status: "OK",
+    //             items: items
+    //         })
+    //     }
 
-    })
+    // })
+    req.body.current_user = req.session.user
+    request({  
+        url: "http://192.168.122.28/"+req.params.username+'/posts',
+        method: 'GET',
+        json: req.body
+    }, 
+    function(err, response, body) {  
+        if(err){
+            console.log(err);
+        }
+        else if(body.status=='error'){
+            res.status(404).json(body);
+        }else{
+            res.json(body);
+        }
+    });
 })
 
 router.get('/:username/followers',jsonParser,function(req,res){

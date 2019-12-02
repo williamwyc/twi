@@ -4,20 +4,69 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
+var request = require('request');
 
 router.get('/:id',(req,res)=>{
-    getItem(req.params.id,req.app.locals.db,res);
+    // getItem(req.params.id,req.app.locals.db,res);
+    req.body.current_user = req.session.user
+    request({  
+        url: "http://192.168.122.28/item/"+req.params.id,
+        method: 'GET',
+        json: req.body
+    }, 
+    function(err, response, body) {  
+        if(err){
+            console.log(err);
+        }
+        else if(body.status=='error'){
+            res.status(404).json(body);
+        }else{
+            res.json(body);
+        }
+    });
 });
 
 router.delete('/:id',(req,res)=>{
-    deleteItem(req.params.id,req.app.locals.db,req,res);
+    //deleteItem(req.params.id,req.app.locals.db,req,res);
+    req.body.current_user = req.session.user
+    request({  
+        url: "http://192.168.122.28/item/"+req.params.id,
+        method: 'DELETE',
+        json: req.body
+    }, 
+    function(err, response, body) {  
+        if(err){
+            console.log(err);
+        }
+        else if(body.status=='error'){
+            res.status(404).json(body);
+        }else{
+            res.json(body);
+        }
+    });
 });
 
 router.post('/:id/like',(req,res)=>{
     if(req.body.like == null){
         req.body.like = true
     }
-    likeItem(req.params.id,req,res)
+    //likeItem(req.params.id,req,res)
+    req.body.current_user = req.session.user
+    request({  
+        url: "http://192.168.122.28/item/"+req.params.id+"/like",
+        method: 'POST',
+        json: req.body
+    }, 
+    function(err, response, body) {  
+        if(err){
+            console.log(err);
+        }
+        else if(body.status=='error'){
+            res.status(404).json(body);
+        }else{
+            res.json(body);
+        }
+    });
 });
 
 function likeItem(id,req,res){
