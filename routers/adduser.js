@@ -28,6 +28,11 @@ router.post('/',jsonParser,function(req,res){
             })
         }
         else{
+            req.app.locals.mem.set(req.body.email,req.body,50,function(err){
+                if(err){
+                    console.log(err)
+                }
+            })
             var transporter = nodemailer.createTransport({
                 host: '130.245.168.51',
                 port: 25,
@@ -58,18 +63,7 @@ router.post('/',jsonParser,function(req,res){
                             })
                         }
                         else{
-                            req.app.locals.mem.set(req.body.email,req.body,50,function(err){
-                                if(err){
-                                    console.log(err)
-                                    res.status(500).json({
-                                        'status': "error",
-                                        'error': err
-                                    })
-                                }
-                                else{
-                                    res.status(200).json({'status': "OK"})
-                                }
-                            })
+                            res.status(200).json({'status': "OK"})
                         }
                     })
                 }

@@ -73,6 +73,7 @@ router.get('/',jsonParser,(req,res)=>{
 
 router.post('/',jsonParser,function(req,res){
     req.app.locals.mem.get(req.body.email,function(err,data){
+        console.log(data)
         if(data != null){
             if(data.key==req.body.key||req.body.key=='abracadabra'){
                 req.app.locals.mem.set(data.username,data,50,function(err){
