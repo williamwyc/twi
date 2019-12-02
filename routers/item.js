@@ -50,7 +50,6 @@ router.post('/:id/like',(req,res)=>{
     if(req.body.like == null){
         req.body.like = true
     }
-    //likeItem(req.params.id,req,res)
     req.body.current_user = req.session.user
     request({  
         url: "http://192.168.122.28/item/"+req.params.id+"/like",
@@ -62,7 +61,7 @@ router.post('/:id/like',(req,res)=>{
             console.log(err);
         }
         else if(body.status=='error'){
-            res.status(404).json(body);
+            res.status(400).json(body);
         }else{
             res.json(body);
         }
