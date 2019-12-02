@@ -23,21 +23,28 @@ router.post('/',jsonParser,function(req,res){
             })
         }
         else if(result.length<=0){
-            res.status(400).json({
+            console.log("No such user")
+            console.log(req.body)
+            res.status(401).json({
                 'status': "error",
                 'error': "No such user"
             })
         }
         else{
-            user = result[0]
-            if(user.password != req.body.password){
-                res.status(400).json({
+            if(result[0].password != req.body.password){
+                console.log("Wrong Password")
+                console.log(req.body)
+                console.log(result[0])
+                res.status(402).json({
                     'status': "error",
                     'error': "Wrong Password"
                 })
             }
-            else if(user.verify == false){
-                res.status(400).json({
+            else if(result[0].verify == false){
+                console.log("No such user")
+                console.log(req.body)
+                console.log(result[0])
+                res.status(403).json({
                     'status': "error",
                     'error': "Not verified"
                 })
