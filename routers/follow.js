@@ -4,16 +4,24 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json()
 
 router.post('/',jsonParser,function(req,res){
-    if(req.session.user == null || req.body.username == null){
-        console.log('req.body.username is null')
+    console.log("Follow:")
+    console.log(req.session.user)
+    console.log(req.body)
+    if(req.session.user == null){
+        console.log('User not login')
         res.status(400).json({
             'status': 'error',
-            'error': 'req.body.username is null'
+            'error': 'User not login'
+        })
+    }
+    else if(req.body.username == null){
+        console.log('Following not specified.')
+        res.status(400).json({
+            'status': 'error',
+            'error': 'User not login'
         })
     }
     else{
-        console.log("Follow:")
-        console.log(req.body)
         if(req.body.follow == null){
             req.body.follow = true
         }
