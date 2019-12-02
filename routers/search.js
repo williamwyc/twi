@@ -97,7 +97,6 @@ router.post('/',(req,res)=>{
             req.body.query.media = {$ne:[]}
         }
         req.body.current_user = req.session.user
-        console.log(req.body)
         request({  
             url: "http://192.168.122.28/search",
             method: 'POST',
