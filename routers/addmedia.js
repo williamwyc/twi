@@ -6,7 +6,7 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
 var multer = require('multer')
 var storage = multer.memoryStorage()
-var upload = multer({dest:'upload/',storage:storage})
+var upload = multer({dest:'upload/'})
 var uniqid = require("uniqid");
 var request = require('request');
 var fs      = require('fs');
@@ -28,7 +28,7 @@ router.post('/',upload.single('content'),function(req,res){
         request({  
             url: "http://192.168.122.28/addmedia",
             method: 'POST',
-            formData : {"content":req.file}
+            formData : {"content":fs.createReadStream(req.file.path)}
             }, 
         function(err, response, body) {  
             if(err){
