@@ -38,7 +38,7 @@ router.get('/:id',multer().none(),function(req,res){
     // })
     req.body.current_user = req.session.user
     request({  
-        url: "http://192.168.122.28/media"+req.params.id,
+        url: "http://192.168.122.28/media/"+req.params.id,
         method: 'GET',
         json: req.body
     }, 
