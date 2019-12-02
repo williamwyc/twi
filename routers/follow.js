@@ -5,12 +5,15 @@ var jsonParser = bodyParser.json()
 
 router.post('/',jsonParser,function(req,res){
     if(req.session.user == null || req.body.username == null){
-        res.status(500).json({
+        console.log('req.body.username is null')
+        res.status(400).json({
             'status': 'error',
             'error': 'req.body.username is null'
         })
     }
     else{
+        console.log("Follow:")
+        console.log(req.body)
         if(req.body.follow == null){
             req.body.follow = true
         }
@@ -24,13 +27,14 @@ router.post('/',jsonParser,function(req,res){
                 })
             }
             else if(result.length<=0){
+                console.log('User does not exist')
                 res.status(400).json({
                     'status': 'error',
                     'error':'User does not exist'
                 })
             }
             else{
-                if(req.body.follow){
+                if(req.body.follow == true){
                     db.collection("follow").find({'following': req.body.username, 'follower': req.session.user}).toArray(function(err, result){
                         if(err){
                             console.log(err)
@@ -40,6 +44,7 @@ router.post('/',jsonParser,function(req,res){
                             })
                         }
                         else if(result.length>0){
+                            console.log('Already followed')
                             res.status(200).json({
                                 'status': 'error',
                                 'error':'Already followed'
@@ -73,6 +78,7 @@ router.post('/',jsonParser,function(req,res){
                             });
                         }
                         else if(obj.result.n <= 0){
+                            console.log("Not followed")
                             res.status(400).json({
                                 status:"error",
                                 error:"Not followed"
