@@ -6,7 +6,8 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
-//var request = require('request');
+var Memcached = require('memcached');
+var memcached = new Memcached('localhost:11211')
 
 router.get('/',jsonParser,(req,res)=>{
     /*var email=req.param.email;
@@ -71,6 +72,17 @@ router.get('/',jsonParser,(req,res)=>{
 });
 
 router.post('/',jsonParser,function(req,res){
+    req.app.locals.mem.get(req.body.email,function(err,data){
+        if(data != null){
+            if(data.key==req.body.key||req.body.key=='abracadabra'){
+                req.app.locals.mem.set(data.username,data,10,function(err){
+                    if(err){
+                        console.log(err)
+                    }
+                })
+            }
+        }
+    })
     req.app.locals.db.collection("users").find({'email': req.body.email}).toArray(function(err,result){
         if(err){
             console.log(err)
@@ -81,6 +93,22 @@ router.post('/',jsonParser,function(req,res){
         }
         else if(result.length == 1){
             if(result[0].key==req.body.key||req.body.key=='abracadabra'){
+                memcached.get('users',function(err,data){
+                    if(err){
+                        console.log(err)
+                    }
+                    else if(data!=null){
+                        data = data.push(result[0].username)
+                        memcached.set(key,data,1000,function(err){
+                            if(err){
+                                console.log(err)
+                            }
+                            else{
+                                
+                            }
+                        })
+                    }
+                })
                 req.app.locals.db.collection('users').update({'email': req.body.email},{ $set:
                     {
                         'verify': true

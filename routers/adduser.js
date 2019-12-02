@@ -58,7 +58,18 @@ router.post('/',jsonParser,function(req,res){
                             })
                         }
                         else{
-                            res.status(200).json({'status': "OK"})
+                            req.app.locals.mem.set(req.body.email,req.body,10,function(err){
+                                if(err){
+                                    console.log(err)
+                                    res.status(500).json({
+                                        'status': "error",
+                                        'error': err
+                                    })
+                                }
+                                else{
+                                    res.status(200).json({'status': "OK"})
+                                }
+                            })
                         }
                     })
                 }

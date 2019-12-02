@@ -85,29 +85,52 @@ router.post('/',(req,res)=>{
 });
 
 function itemSearch(req,res){
-    req.app.locals.db.collection("items").find(req.body.query).sort({'timestamp':-1}).limit(parseInt(req.body.limit)).toArray(function(err, result){
+    req.app.locals.mem.get(req.body.query,function(err,data){
         if(err){
+            console.log(err)
             res.status(500).json({
                 status:"error",
                 error:err
             });
         }
+        else if(data != null){
+            res.status(200).json({
+                status:"OK",
+                items:data
+            });
+        }
         else{
-            if(req.body.rank == 'interest'){
-                result.sort(function(a,b){
-                    return (b.property.likes+b.retweeted)/(req.body.current-b.timestamp) - (a.property.likes+a.retweeted)/(req.body.current-a.timestamp)
-                })
-                res.status(200).json({
-                    status:"OK",
-                    items:result
-                });
-            }
-            else{
-                res.status(200).json({
-                    status:"OK",
-                    items:result
-                });
-            }
+            req.app.locals.db.collection("items").find(req.body.query).sort({'timestamp':-1}).limit(parseInt(req.body.limit)).toArray(function(err, result){
+                if(err){
+                    console.log(err)
+                    res.status(500).json({
+                        status:"error",
+                        error:err
+                    });
+                }
+                else{
+                    if(req.body.rank == 'interest'){
+                        result.sort(function(a,b){
+                            return (b.property.likes+b.retweeted)/(req.body.current-b.timestamp) - (a.property.likes+a.retweeted)/(req.body.current-a.timestamp)
+                        })
+                    }
+                    req.app.locals.mem.set(req.body.query,result,function(err){
+                        if(err){
+                            console.log(err)
+                            res.status(500).json({
+                                status:"error",
+                                error:err
+                            });
+                        }
+                        else{
+                            res.status(200).json({
+                                status:"OK",
+                                items:result
+                            });
+                        }
+                    })
+                }
+            })
         }
     })
 }

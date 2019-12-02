@@ -30,7 +30,6 @@ router.post('/',jsonParser,function(req,res){
                 })
             }
             else if(result.length<=0){
-                console.log('User does not exist')
                 res.status(400).json({
                     'status': 'error',
                     'error':'User does not exist'
@@ -47,7 +46,6 @@ router.post('/',jsonParser,function(req,res){
                             })
                         }
                         else if(result.length>0){
-                            console.log('Already followed')
                             res.status(200).json({
                                 'status': 'error',
                                 'error':'Already followed'
@@ -81,7 +79,6 @@ router.post('/',jsonParser,function(req,res){
                             });
                         }
                         else if(obj.result.n <= 0){
-                            console.log("Not followed")
                             res.status(400).json({
                                 status:"error",
                                 error:"Not followed"
