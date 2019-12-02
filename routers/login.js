@@ -14,7 +14,6 @@ router.get('/',jsonParser,(req,res)=>{
 router.post('/',jsonParser,function(req,res){
     //username: string, password: string
     req.app.locals.mem.get(req.body.username,function(err,data){
-        console.log(data)
         if(err){
             console.log(err)
             res.status(500).json({
