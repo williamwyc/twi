@@ -111,9 +111,7 @@ router.post('/',(req,res)=>{
 });
 
 function itemSearch(req,res){
-    console.log(req.body.key)
     req.app.locals.mem.get(req.body.key,function(err,data){
-        console.log(data)
         if(err){
             console.log(err)
             res.status(500).json({
@@ -129,7 +127,6 @@ function itemSearch(req,res){
         }
         else{
             req.app.locals.db.collection("items").find(req.body.query).sort({'timestamp':-1}).limit(parseInt(req.body.limit)).toArray(function(err, result){
-                console.log(req.body.key)
                 if(err){
                     console.log(err)
                     res.status(500).json({
@@ -143,7 +140,7 @@ function itemSearch(req,res){
                             return (b.property.likes+b.retweeted)/(req.body.current-b.timestamp) - (a.property.likes+a.retweeted)/(req.body.current-a.timestamp)
                         })
                     }
-                    req.app.locals.mem.set(req.body.key,result,function(err){
+                    req.app.locals.mem.set(req.body.key,result,100,function(err){
                         if(err){
                             console.log(err)
                             res.status(500).json({
