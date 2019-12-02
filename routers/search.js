@@ -7,6 +7,7 @@ var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
 
 router.post('/',(req,res)=>{
+    console.log("Search: ")
     if(req.body.following == null){
         if(req.session.user == null){
             res.status(400).json({
@@ -54,7 +55,7 @@ router.post('/',(req,res)=>{
         req.body.query.$text = {$search: req.body.q}
     }
     if(req.body.username!=null&&req.body.username!=''){
-        req.body.query.username = username
+        req.body.query.username = req.body.username
     }
     else if(req.following){
         req.app.locals.db.collection("follow").find({'follower':req.session.user}).toArray(function(err, result){
@@ -87,7 +88,6 @@ router.post('/',(req,res)=>{
 function itemSearch(req,res){
     req.app.locals.db.collection("items").find(req.body.query).sort({'timestamp':-1}).limit(parseInt(req.body.limit)).toArray(function(err, result){
         if(err){
-            console.log(err)
             res.status(500).json({
                 status:"error",
                 error:err
