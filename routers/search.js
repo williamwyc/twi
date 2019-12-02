@@ -28,12 +28,20 @@ router.post('/',(req,res)=>{
     req.body.current = Date.now()
     if(req.body.timestamp == null || req.body.timestamp == '' || req.body.timestamp <= 0){
         req.body.timestamp = req.body.current
+        req.body.key = 'd'
+    }
+    else{
+        req.body.key = String(req.body.timestamp)
     }
     if(req.body.limit == null || req.body.limit == '' ||parseInt(req.body.limit) <= 0){
         req.body.limit = 25
     }
     else if(parseInt(req.body.limit) >= 100){
         req.body.limit = 100
+        req.body.key += '100'
+    }
+    else{
+        req.body.key += req.body.limit
     }
     if(req.body.rank == null){
         req.body.rank = 'interest'
@@ -52,11 +60,15 @@ router.post('/',(req,res)=>{
     req.body.query = {'timestamp':{$lt:req.body.timestamp*1000}}
     if (req.body.q != null && req.body.q != "") {
         req.body.query.$text = {$search: req.body.q}
+        req.body.key += req.body.q
     }
     if(req.body.username!=null&&req.body.username!=''){
         req.body.query.username = req.body.username
+        req.body.key += req.body.username
     }
     else if(req.following){
+        req.body.key += 'f'
+        req.body.key += req.session.user
         req.app.locals.db.collection("follow").find({'follower':req.session.user}).toArray(function(err, result){
             if(err){
                 console.log(err)
@@ -70,22 +82,25 @@ router.post('/',(req,res)=>{
             }
         })
     }
-    if(!req.body.replies){
+    if(req.body.replies == false){
+        req.body.key += 'r'
         req.body.query.parent = {$ne:'reply'}
     }
     else{
         if(req.body.parent!=null && req.body.parent != 'none' && req.body.parent != ''){
             req.body.query.parent = req.body.parent
+            req.body.key += 'p'
         }
     }
     if(req.body.hasMedia){
         req.body.query.media = {$ne:[]}
+        req.body.key += 'm'
     }
     itemSearch(req,res)
 });
 
 function itemSearch(req,res){
-    req.app.locals.mem.get(req.body.query,function(err,data){
+    req.app.locals.mem.get(req.body.key,function(err,data){
         if(err){
             console.log(err)
             res.status(500).json({
@@ -110,11 +125,12 @@ function itemSearch(req,res){
                 }
                 else{
                     if(req.body.rank == 'interest'){
+                        req.body.key+='i'
                         result.sort(function(a,b){
                             return (b.property.likes+b.retweeted)/(req.body.current-b.timestamp) - (a.property.likes+a.retweeted)/(req.body.current-a.timestamp)
                         })
                     }
-                    req.app.locals.mem.set(req.body.query,result,function(err){
+                    req.app.locals.mem.set(req.body.key,result,function(err){
                         if(err){
                             console.log(err)
                             res.status(500).json({
