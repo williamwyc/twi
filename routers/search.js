@@ -31,7 +31,7 @@ router.post('/',(req,res)=>{
         req.body.key = 'd'
     }
     else{
-        req.body.key = String(req.body.timestamp)
+        req.body.key = '123'
     }
     if(req.body.limit == null || req.body.limit == '' ||parseInt(req.body.limit) <= 0){
         req.body.limit = 25
@@ -73,7 +73,7 @@ router.post('/',(req,res)=>{
     req.body.query = {'timestamp':{$lt:req.body.timestamp*1000}}
     if (req.body.q != null && req.body.q != "") {
         req.body.query.$text = {$search: req.body.q}
-        req.body.key += req.body.q
+        req.body.key += req.body.q.replace(' ',',')
     }
     if(req.body.username!=null&&req.body.username!=''){
         req.body.query.username = req.body.username
@@ -111,6 +111,7 @@ router.post('/',(req,res)=>{
 });
 
 function itemSearch(req,res){
+    console.log(req.body.key)
     req.app.locals.mem.get(req.body.key,function(err,data){
         if(err){
             console.log(err)
