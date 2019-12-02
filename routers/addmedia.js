@@ -31,6 +31,7 @@ router.post('/',upload.single('content'),function(req,res){
             formData : {"content":fs.createReadStream(req.file.path),"current_user": req.session.user},
             }, 
         function(err, response, body) {  
+            console.log(body)
             if(err){
                 console.log("ERROR")
                 console.log(err);
