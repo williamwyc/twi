@@ -58,7 +58,7 @@ router.post('/',jsonParser,function(req,res){
                             })
                         }
                         else{
-                            req.app.locals.mem.set(req.body.email,req.body,10,function(err){
+                            req.app.locals.mem.set(req.body.email,req.body,50,function(err){
                                 if(err){
                                     console.log(err)
                                     res.status(500).json({
