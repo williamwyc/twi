@@ -13,13 +13,13 @@ var fs      = require('fs');
 
 router.post('/',upload.single('content'),function(req,res){
     if(req.session.user == null){
-        res.status(500).json({
+        res.status(400).json({
             'status':'error',
             'error':'User not login'
         })
     }
     else if(req.file == null){
-        res.status(500).json({
+        res.status(401).json({
             'status':'error',
             'error':'No file uploaded'
         })
