@@ -28,18 +28,19 @@ router.post('/',upload.single('content'),function(req,res){
         request({  
             url: "http://192.168.122.28/addmedia",
             method: 'POST',
-            formData : {"content":fs.createReadStream(req.file.path)},
-            body: {"current_user": req.session.user}
+            formData : {"content":fs.createReadStream(req.file.path),"current_user": req.session.user},
             }, 
         function(err, response, body) {  
             if(err){
                 console.log("ERROR")
                 console.log(err);
             }
-            if(body.status=='error'){
-                res.status(404).json(body);
-            }else{
-                res.json(body);
+            else{
+                if(body.status=='error'){
+                    res.status(404).json(body);
+                }else{
+                    res.json(body);
+                }
             }
             
         });
