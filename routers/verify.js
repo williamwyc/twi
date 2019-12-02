@@ -81,12 +81,6 @@ router.post('/',jsonParser,function(req,res){
                     }
                 })
             }
-            else{
-                res.status(400).json({
-                    'status': "error",
-                    'error': "Wrong key"
-                })
-            }
         }
     })
     req.app.locals.db.collection("users").find({'email': req.body.email}).toArray(function(err,result){
