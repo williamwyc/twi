@@ -28,7 +28,7 @@ router.post('/',upload.single('content'),function(req,res){
         request({  
             url: "http://192.168.122.28/addmedia",
             method: 'POST',
-            formData : {"content":req.file)}
+            formData : {"content":req.file}
             }, 
         function(err, response, body) {  
             if(err){
