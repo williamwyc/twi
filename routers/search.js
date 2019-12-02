@@ -111,7 +111,7 @@ router.post('/',(req,res)=>{
 });
 
 function itemSearch(req,res){
-    req.body.key = req.body.key.replace(/ /g,';')
+    req.body.key = req.body.key.replace(/\t/g,';').replace(/ /g,';').replace(/\n/g,';')
     console.log(req.body.key)
     req.app.locals.mem.get(req.body.key,function(err,data){
         if(err){
