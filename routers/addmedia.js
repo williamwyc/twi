@@ -9,6 +9,7 @@ var storage = multer.memoryStorage()
 var upload = multer({dest:'upload/',storage:storage})
 var uniqid = require("uniqid");
 var request = require('request');
+var fs      = require('fs');
 
 router.post('/',upload.single('content'),function(req,res){
     if(req.session.user == null){
