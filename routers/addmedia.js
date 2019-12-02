@@ -40,7 +40,7 @@ router.post('/',upload.single('content'),function(req,res){
                 if(body.status=='error'){
                     res.status(404).json(body);
                 }else{
-                    res.json(body);
+                    res.json(JSON.parse(body));
                 }
             }
             
