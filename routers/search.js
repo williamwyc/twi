@@ -35,6 +35,7 @@ router.post('/',(req,res)=>{
     }
     if(req.body.limit == null || req.body.limit == '' ||parseInt(req.body.limit) <= 0){
         req.body.limit = 25
+        req.body.key += '25'
     }
     else if(parseInt(req.body.limit) >= 100){
         req.body.limit = 100
@@ -43,17 +44,29 @@ router.post('/',(req,res)=>{
     else{
         req.body.key += req.body.limit
     }
-    if(req.body.rank == null){
+    if(req.body.rank == null || req.body.rank != 'time'){
         req.body.rank = 'interest'
+        req.body.key += 'i'
     }
-    if(req.body.parent == null){
+    else{
+        req.body.key += 't'
+    }
+    if(req.body.parent == null || req.body.parent == 'none'){
         req.body.parent = 'none'
+        req.body.key += 'n'
     }
-    if(req.body.replies == null){
+    else{
+        req.body.key += req.body.parent
+    }
+    if(req.body.replies == null || req.body.replies != false){
         req.body.replies = true
+        req.body.key += 'r'
     }
-    if(req.body.hasMedia == null){
+    if(req.body.hasMedia == null || req.body.hasMedia == false){
         req.body.hasMedia = false
+    }
+    else{
+        req.body.key += 'm'
     }
 
     //query
@@ -66,7 +79,7 @@ router.post('/',(req,res)=>{
         req.body.query.username = req.body.username
         req.body.key += req.body.username
     }
-    else if(req.following){
+    else if(req.body.following == true){
         req.body.key += 'f'
         req.body.key += req.session.user
         req.app.locals.db.collection("follow").find({'follower':req.session.user}).toArray(function(err, result){
@@ -83,13 +96,11 @@ router.post('/',(req,res)=>{
         })
     }
     if(req.body.replies == false){
-        req.body.key += 'r'
         req.body.query.parent = {$ne:'reply'}
     }
     else{
         if(req.body.parent!=null && req.body.parent != 'none' && req.body.parent != ''){
             req.body.query.parent = req.body.parent
-            req.body.key += 'p'
         }
     }
     if(req.body.hasMedia){
@@ -100,7 +111,9 @@ router.post('/',(req,res)=>{
 });
 
 function itemSearch(req,res){
+    console.log(req.body.key)
     req.app.locals.mem.get(req.body.key,function(err,data){
+        console.log(data)
         if(err){
             console.log(err)
             res.status(500).json({
@@ -116,6 +129,7 @@ function itemSearch(req,res){
         }
         else{
             req.app.locals.db.collection("items").find(req.body.query).sort({'timestamp':-1}).limit(parseInt(req.body.limit)).toArray(function(err, result){
+                console.log(req.body.key)
                 if(err){
                     console.log(err)
                     res.status(500).json({
@@ -125,7 +139,6 @@ function itemSearch(req,res){
                 }
                 else{
                     if(req.body.rank == 'interest'){
-                        req.body.key+='i'
                         result.sort(function(a,b){
                             return (b.property.likes+b.retweeted)/(req.body.current-b.timestamp) - (a.property.likes+a.retweeted)/(req.body.current-a.timestamp)
                         })
