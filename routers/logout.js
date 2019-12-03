@@ -6,6 +6,7 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
+var cookieParser = require('cookie-parser');
 
 router.post('/',jsonParser,function(req,res){
     req.session = null;
