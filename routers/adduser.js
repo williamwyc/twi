@@ -34,7 +34,7 @@ router.post('/',jsonParser,function(req,res){
                 }
             })
             var transporter = nodemailer.createTransport({
-                host: '130.245.168.51',
+                host: 'localhost',
                 port: 587,
                 tls: {
                     rejectUnauthorized: false
