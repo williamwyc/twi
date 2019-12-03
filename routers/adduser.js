@@ -13,8 +13,6 @@ router.post('/',jsonParser,function(req,res){
     req.body.key = Math.floor((Math.random() * 899999) + 100000);
     req.body.verify = false
     req.body._id = req.body.username
-    console.log("Add user")
-    console.log(req.body)
     db.collection("users").find({$or:[{'username': req.body.username},{'email': req.body.email}]}).toArray(function(err, result){
         if(err){
             console.log(err)
@@ -30,12 +28,12 @@ router.post('/',jsonParser,function(req,res){
             })
         }
         else{
-            console.log("Sending email")
             req.app.locals.mem.set(req.body.email,req.body,50,function(err){
                 if(err){
                     console.log(err)
                 }
             })
+            console.log("Sending mail")
             var transporter = nodemailer.createTransport({
                 host: '130.245.168.51',
                 port: 25,
@@ -43,6 +41,7 @@ router.post('/',jsonParser,function(req,res){
                     rejectUnauthorized: false
                 }
             }); 
+            console.log("mail server connected")
             var mailOptions = {
                 from: 'ubuntu@arknights.com', 
                 to: req.body.email,
