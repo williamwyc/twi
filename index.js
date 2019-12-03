@@ -8,6 +8,8 @@ var MongoClient = require('mongodb').MongoClient;
 var cassandra = require('cassandra-driver');
 var client = new cassandra.Client({contactPoints: ['130.245.168.194'], localDataCenter:'datacenter1', keyspace: 'twi'})
 var cookieSession = require('cookie-session');
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
 var Memcached = require('memcached');
 var memcached = new Memcached('localhost:11211')
 app.locals.mem = memcached;
