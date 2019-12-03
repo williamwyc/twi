@@ -5,8 +5,7 @@ var jsonParser = bodyParser.json()
 var cookieParser = require('cookie-parser');
 
 router.post('/',jsonParser,function(req,res){
-    req.session.user = req.cookies.a.user
-    if(req.session.user == null){
+    if(req.cookies.a == null || req.cookies.a.user == null){
         res.status(400).json({
             'status': 'error',
             'error': 'User not login'
@@ -39,7 +38,7 @@ router.post('/',jsonParser,function(req,res){
             }
             else{
                 if(req.body.follow == true){
-                    db.collection("follow").find({'following': req.body.username, 'follower': req.session.user}).toArray(function(err, result){
+                    db.collection("follow").find({'following': req.body.username, 'follower': req.cookies.a.user}).toArray(function(err, result){
                         if(err){
                             console.log(err)
                             res.status(500).json({
@@ -54,7 +53,7 @@ router.post('/',jsonParser,function(req,res){
                             })
                         }
                         else{
-                            db.collection("follow").insertOne({'following': req.body.username, 'follower': req.session.user}, function(err, result){
+                            db.collection("follow").insertOne({'following': req.body.username, 'follower': req.cookies.a.user}, function(err, result){
                                 if(err){
                                     console.log(err)
                                     res.status(500).json({
@@ -72,7 +71,7 @@ router.post('/',jsonParser,function(req,res){
                 }
                 else{
                     
-                    db.collection("follow").remove({'following': req.body.username, 'follower': req.session.user}, function(err, obj){
+                    db.collection("follow").remove({'following': req.body.username, 'follower': req.cookies.a.user}, function(err, obj){
                         if(err){
                             console.log(err)
                             res.status(500).json({

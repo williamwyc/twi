@@ -13,8 +13,7 @@ var fs      = require('fs');
 var cookieParser = require('cookie-parser');
 
 router.post('/',upload.single('content'),function(req,res){
-    console.log(req.cookies.a)
-    if(req.cookies.a.user == null){
+    if(req.cookies.a == null || req.cookies.a.user == null){
         console.log('Addmedia User not login')
         res.status(400).json({
             'status':'error',
@@ -35,7 +34,6 @@ router.post('/',upload.single('content'),function(req,res){
             }, 
         function(err, response, body) {  
             if(err){
-                console.log("ERROR")
                 console.log(err);
             }
             else{

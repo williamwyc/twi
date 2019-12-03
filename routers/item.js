@@ -9,8 +9,6 @@ var cookieParser = require('cookie-parser');
 
 router.get('/:id',(req,res)=>{
     // getItem(req.params.id,req.app.locals.db,res);
-    req.session.user = req.cookies.a.user
-    req.body.current_user = req.session.user
     request({  
         url: "http://192.168.122.28/item/"+req.params.id,
         method: 'GET',
@@ -30,46 +28,60 @@ router.get('/:id',(req,res)=>{
 
 router.delete('/:id',(req,res)=>{
     //deleteItem(req.params.id,req.app.locals.db,req,res);
-    req.session.user = req.cookies.a.user
-    req.body.current_user = req.session.user
-    request({  
-        url: "http://192.168.122.28/item/"+req.params.id,
-        method: 'DELETE',
-        json: req.body
-    }, 
-    function(err, response, body) {  
-        if(err){
-            console.log(err);
-        }
-        else if(body.status=='error'){
-            res.status(404).json(body);
-        }else{
-            res.json(body);
-        }
-    });
+    if(req.cookies.a == null || req.cookies.a.user == null){
+        res.status(400).json({
+            'status': 'error',
+            'error': 'User not login'
+        })
+    }
+    else{
+        req.body.current_user = req.cookies.a.user
+        request({  
+            url: "http://192.168.122.28/item/"+req.params.id,
+            method: 'DELETE',
+            json: req.body
+        }, 
+        function(err, response, body) {  
+            if(err){
+                console.log(err);
+            }
+            else if(body.status=='error'){
+                res.status(404).json(body);
+            }else{
+                res.json(body);
+            }
+        });
+    }
 });
 
 router.post('/:id/like',(req,res)=>{
-    if(req.body.like == null){
-        req.body.like = true
+    if(req.cookies.a == null || req.cookies.a.user == null){
+        res.status(400).json({
+            'status': 'error',
+            'error': 'User not login'
+        })
     }
-    req.session.user = req.cookies.a.user
-    req.body.current_user = req.session.user
-    request({  
-        url: "http://192.168.122.28/item/"+req.params.id+"/like",
-        method: 'POST',
-        json: req.body
-    }, 
-    function(err, response, body) {  
-        if(err){
-            console.log(err);
+    else{
+        if(req.body.like == null){
+            req.body.like = true
         }
-        else if(body.status=='error'){
-            res.status(400).json(body);
-        }else{
-            res.json(body);
-        }
-    });
+        req.body.current_user = req.cookies.a.user
+        request({  
+            url: "http://192.168.122.28/item/"+req.params.id+"/like",
+            method: 'POST',
+            json: req.body
+        }, 
+        function(err, response, body) {  
+            if(err){
+                console.log(err);
+            }
+            else if(body.status=='error'){
+                res.status(400).json(body);
+            }else{
+                res.json(body);
+            }
+        });
+    }
 });
 
 function likeItem(id,req,res){

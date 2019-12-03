@@ -55,22 +55,42 @@ router.post('/',(req,res)=>{
     //         addItem(req, res)
     //     }
     // }
-    req.body.current_user = req.cookies.a.user
-    request({  
-        url: "http://192.168.122.28/additem",
-        method: 'POST',
-        json: req.body
-    }, 
-    function(err, response, body) {  
-        if(err){
-            console.log(err);
-        }
-        else if(body.status=='error'){
-            res.status(404).json(body);
-        }else{
-            res.json(body);
-        }
-    });
+    if(req.cookies.a == null || req.cookies.a.user == null){
+        res.status(400).json({
+            status:"error",
+            error:"Login Frist"
+        });
+    }
+    else if(req.body.content == null){
+        res.status(400).json({
+            status:"error",
+            error:"No content"
+        });
+    }
+    else if(req.body.parent == null && req.body.childType != null){
+        res.status(400).json({
+            status:"error",
+            error:"Undefined parent"
+        });
+    }
+    else{
+        req.body.current_user = req.cookies.a.user
+        request({  
+            url: "http://192.168.122.28/additem",
+            method: 'POST',
+            json: req.body
+        }, 
+        function(err, response, body) {  
+            if(err){
+                console.log(err);
+            }
+            else if(body.status=='error'){
+                res.status(404).json(body);
+            }else{
+                res.json(body);
+            }
+        });
+    }
 });
 
 function addItem(req, res){

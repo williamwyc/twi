@@ -9,8 +9,7 @@ var request = require('request');
 var cookieParser = require('cookie-parser');
 
 router.post('/',(req,res)=>{
-    req.session.user = req.cookies.a.user
-    if(req.session.user == null && (req.body.following == null || req.body.following == true)){
+    if((req.cookies.a == null || req.cookies.a.user )== null && (req.body.following == null || req.body.following == true)){
         console.log("Login First")
         res.status(400).json({
             status:"error",
@@ -98,7 +97,7 @@ router.post('/',(req,res)=>{
         if(req.body.hasMedia){
             req.body.query.media = {$ne:[]}
         }
-        req.body.current_user = req.session.user
+        req.body.current_user = req.cookies.a.user
         request({  
             url: "http://192.168.122.28/search",
             method: 'POST',
