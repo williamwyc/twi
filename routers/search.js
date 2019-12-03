@@ -97,7 +97,6 @@ router.post('/',(req,res)=>{
         if(req.body.hasMedia){
             req.body.query.media = {$ne:[]}
         }
-        req.body.current_user = req.cookies.a.user
         request({  
             url: "http://152.44.33.242/search",
             method: 'POST',
