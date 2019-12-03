@@ -12,6 +12,7 @@ var cookieParser = require('cookie-parser');
 app.use(cookieParser());
 var Memcached = require('memcached');
 var memcached = new Memcached('localhost:11211')
+var proxy = require('http-proxy-middleware');
 app.locals.mem = memcached;
 
 client.connect(function(err, result) {
@@ -65,7 +66,7 @@ app.use("/item", item)
 app.use("/search", search)
 app.use("/user",user)
 app.use("/follow",follow)
-app.use("/addmedia",addmedia)
+app.use("/addmedia",proxy({target:'http://192.168.122.28',changeOrigin: false}))
 app.use("/media",media)
 app.use(express.static(__dirname));
 
