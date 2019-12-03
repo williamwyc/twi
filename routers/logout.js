@@ -10,7 +10,7 @@ var cookieParser = require('cookie-parser');
 
 router.post('/',jsonParser,function(req,res){
     req.session = null;
-    req.cookies.session = null
+    req.cookies.a = null
     res.status(200).json({'status':'OK'});
 })
 

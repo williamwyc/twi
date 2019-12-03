@@ -9,7 +9,7 @@ var cookieParser = require('cookie-parser');
 
 router.get('/:id',(req,res)=>{
     // getItem(req.params.id,req.app.locals.db,res);
-    req.session.user = req.cookies.session.user
+    req.session.user = req.cookies.a.user
     req.body.current_user = req.session.user
     request({  
         url: "http://192.168.122.28/item/"+req.params.id,
@@ -30,7 +30,7 @@ router.get('/:id',(req,res)=>{
 
 router.delete('/:id',(req,res)=>{
     //deleteItem(req.params.id,req.app.locals.db,req,res);
-    req.session.user = req.cookies.session.user
+    req.session.user = req.cookies.a.user
     req.body.current_user = req.session.user
     request({  
         url: "http://192.168.122.28/item/"+req.params.id,
@@ -53,7 +53,7 @@ router.post('/:id/like',(req,res)=>{
     if(req.body.like == null){
         req.body.like = true
     }
-    req.session.user = req.cookies.session.user
+    req.session.user = req.cookies.a.user
     req.body.current_user = req.session.user
     request({  
         url: "http://192.168.122.28/item/"+req.params.id+"/like",

@@ -5,7 +5,7 @@ var jsonParser = bodyParser.json()
 var cookieParser = require('cookie-parser');
 
 router.post('/',jsonParser,function(req,res){
-    req.session.user = req.cookies.session.user
+    req.session.user = req.cookies.a.user
     if(req.session.user == null){
         res.status(400).json({
             'status': 'error',

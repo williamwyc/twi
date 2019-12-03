@@ -9,7 +9,7 @@ var request = require('request');
 var cookieParser = require('cookie-parser');
 
 router.post('/',(req,res)=>{
-    req.session.user = req.cookies.session.user
+    req.session.user = req.cookies.a.user
     if(req.session.user == null && (req.body.following == null || req.body.following == true)){
         console.log("Login First")
         res.status(400).json({
