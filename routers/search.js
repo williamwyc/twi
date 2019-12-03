@@ -98,7 +98,7 @@ router.post('/',(req,res)=>{
             req.body.query.media = {$ne:[]}
         }
         request({  
-            url: "http://192.168.122.28/search",
+            url: "http://192.168.122.32/search",
             method: 'POST',
             json: req.body
         }, 

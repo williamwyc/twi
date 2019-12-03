@@ -6,7 +6,7 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 var path = require('path');
 var MongoClient = require('mongodb').MongoClient;
 var cassandra = require('cassandra-driver');
-var client = new cassandra.Client({contactPoints: ['130.245.170.170'], localDataCenter:'datacenter1', keyspace: 'twi'})
+//var client = new cassandra.Client({contactPoints: ['130.245.170.170'], localDataCenter:'datacenter1', keyspace: 'twi'})
 var cookieSession = require('cookie-session');
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -15,23 +15,23 @@ var memcached = new Memcached('localhost:11211')
 var proxy = require('http-proxy-middleware');
 app.locals.mem = memcached;
 
-client.connect(function(err, result) {
-  if(err)
-          console.log('Connection to cassandra error: '+err);
-  else{
-          console.log('Connection with cassandra established');
-          app.locals.client = client;
-          var tableQuery = "CREATE TABLE IF NOT EXISTS MEDIAS (id text PRIMARY KEY, content blob,type text);";
-          client.execute(tableQuery,[],function(err) {
-              if (!err) {
-                  console.log("new table created");
-              }
-              else{
-                  console.log("error in table creation: "+ err);
-              }
-          });
-  }
-});
+// client.connect(function(err, result) {
+//   if(err)
+//           console.log('Connection to cassandra error: '+err);
+//   else{
+//           console.log('Connection with cassandra established');
+//           app.locals.client = client;
+//           var tableQuery = "CREATE TABLE IF NOT EXISTS MEDIAS (id text PRIMARY KEY, content blob,type text);";
+//           client.execute(tableQuery,[],function(err) {
+//               if (!err) {
+//                   console.log("new table created");
+//               }
+//               else{
+//                   console.log("error in table creation: "+ err);
+//               }
+//           });
+//   }
+// });
 
 app.use(express.static(__dirname));
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -61,14 +61,14 @@ app.use("/adduser", adduser)
 app.use("/login", login)
 app.use("/logout", logout)
 app.use("/verify", verify)
-//app.use("/additem", proxy({target:'http://192.168.122.28', changeOrigin: false))
+//app.use("/additem", proxy({target:'http://192.168.122.32', changeOrigin: false))
 app.use("/additem",additem)
 app.use("/item", item)
 app.use("/search", search)
 app.use("/user",user)
 app.use("/follow",follow)
-app.use("/addmedia",proxy({target:'http://192.168.122.28',changeOrigin: false}))
-app.use("/media",proxy({target:'http://192.168.122.28',changeOrigin: false}))
+app.use("/addmedia",proxy({target:'http://192.168.122.32',changeOrigin: false}))
+app.use("/media",proxy({target:'http://192.168.122.32',changeOrigin: false}))
 app.use(express.static(__dirname));
 
 app.engine('html', require('ejs').renderFile);
