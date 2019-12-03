@@ -13,8 +13,8 @@ var fs      = require('fs');
 var cookieParser = require('cookie-parser');
 
 router.post('/',upload.single('content'),function(req,res){
-    console.log(req.cookies.session)
-    if(req.cookies.session.user == null){
+    console.log(req.cookies.a)
+    if(req.cookies.a.user == null){
         console.log('Addmedia User not login')
         res.status(400).json({
             'status':'error',

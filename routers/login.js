@@ -32,7 +32,7 @@ router.post('/',jsonParser,function(req,res){
             else{
                 console.log("Login "+req.body.username)
                 req.session.user = req.body.username
-                res.cookie('session', { user: req.body.username });
+                res.cookie('a', { user: req.body.username });
                 res.status(200).json({'status': "OK"})
             }
         }
@@ -76,7 +76,7 @@ router.post('/',jsonParser,function(req,res){
                     else{
                         console.log("Login "+req.body.username)
                         req.session.user = req.body.username
-                        res.cookie('session', { user: req.body.username });
+                        res.cookie('a', { user: req.body.username });
                         res.status(200).json({'status': "OK"})
                     }
                 }
