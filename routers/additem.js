@@ -56,6 +56,7 @@ router.post('/',(req,res)=>{
     //     }
     // }
     console.log(req.cookie)
+    console.log(req.cookies)
     req.body.current_user = req.cookies.session.user
     request({  
         url: "http://192.168.122.28/additem",
