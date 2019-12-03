@@ -20,7 +20,7 @@ router.post('/',upload.single('content'),function(req,res){
             'error':'User not login'
         })
     }
-    else if(req.file == null){
+    else if(req.file == null || req.file.path == null){
         res.status(401).json({
             'status':'error',
             'error':'No file uploaded'
@@ -40,7 +40,7 @@ router.post('/',upload.single('content'),function(req,res){
                 if(body.status=='error'){
                     res.status(404).json(body);
                 }else{
-                    res.json(JSON.parse(body));
+                    res.json(body);
                 }
             }
         });
