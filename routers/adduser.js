@@ -34,14 +34,14 @@ router.post('/',jsonParser,function(req,res){
                 }
             })
             var transporter = nodemailer.createTransport({
-                host: 'localhost',
+                host: '130.245.168.51',
                 port: 587,
                 tls: {
                     rejectUnauthorized: false
                 }
             }); 
             var mailOptions = {
-                from: 'root@yjj.com', 
+                from: 'ubuntu@arknights.com', 
                 to: req.body.email,
                 subject: 'Twitter Clone: Verify your account',
                 text: "Hello! Please verify your email.<" + "http://" + req.get('host') + "/verify?email=" + req.body.email + "&key=" + req.body.key + ">" + 'key: <' +req.body.key + '>',
