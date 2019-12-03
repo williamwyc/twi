@@ -92,7 +92,7 @@ router.get('/:username/posts',jsonParser,function(req,res){
 
     // })
     request({  
-        url: "http://152.44.33.242/"+req.params.username+'/posts',
+        url: "http://192.168.122.28/"+req.params.username+'/posts',
         method: 'GET',
         json: req.body
     }, 

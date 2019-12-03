@@ -61,14 +61,14 @@ app.use("/adduser", adduser)
 app.use("/login", login)
 app.use("/logout", logout)
 app.use("/verify", verify)
-//app.use("/additem", proxy({target:'http://152.44.33.242', changeOrigin: false))
+//app.use("/additem", proxy({target:'http://192.168.122.28', changeOrigin: false))
 app.use("/additem",additem)
 app.use("/item", item)
 app.use("/search", search)
 app.use("/user",user)
 app.use("/follow",follow)
-app.use("/addmedia",proxy({target:'http://152.44.33.242',changeOrigin: false}))
-app.use("/media",proxy({target:'http://152.44.33.242',changeOrigin: false}))
+app.use("/addmedia",proxy({target:'http://192.168.122.28',changeOrigin: false}))
+app.use("/media",proxy({target:'http://192.168.122.28',changeOrigin: false}))
 app.use(express.static(__dirname));
 
 app.engine('html', require('ejs').renderFile);
@@ -86,7 +86,7 @@ app.get('/', function (req, res) {
   
 });
 
-MongoClient.connect('mongodb://152.44.36.187:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
+MongoClient.connect('mongodb://130.245.168.51:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
   if (err){
     throw err;
   }
