@@ -99,7 +99,7 @@ router.post('/',(req,res)=>{
         }
         req.body.current_user = req.cookies.a.user
         request({  
-            url: "http://192.168.122.28/search",
+            url: "http://152.44.33.242/search",
             method: 'POST',
             json: req.body
         }, 
