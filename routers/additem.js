@@ -5,6 +5,7 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
 var uniqid = require("uniqid");
 var request = require('request');
+var cookieParser = require('cookie-parser');
 
 router.post('/',(req,res)=>{
     // if(req.session.user == null){
@@ -54,7 +55,7 @@ router.post('/',(req,res)=>{
     //         addItem(req, res)
     //     }
     // }
-    console.log(req.cookies.session.user)
+    console.log(req.cookie)
     req.body.current_user = req.cookies.session.user
     request({  
         url: "http://192.168.122.28/additem",
