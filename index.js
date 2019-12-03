@@ -67,8 +67,8 @@ app.use("/item", item)
 app.use("/search", search)
 app.use("/user",user)
 app.use("/follow",follow)
-app.use("/addmedia",proxy({target:'http://192.168.122.32',changeOrigin: false}))
-app.use("/media",proxy({target:'http://192.168.122.32',changeOrigin: false}))
+app.use("/addmedia",proxy({target:'http://192.168.122.33',changeOrigin: false}))
+app.use("/media",proxy({target:'http://192.168.122.33',changeOrigin: false}))
 app.use(express.static(__dirname));
 
 app.engine('html', require('ejs').renderFile);
