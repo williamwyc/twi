@@ -86,7 +86,7 @@ app.get('/', function (req, res) {
   
 });
 
-MongoClient.connect('mongodb://130.245.168.51:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
+MongoClient.connect('mongodb://152.44.36.187:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
   if (err){
     throw err;
   }
