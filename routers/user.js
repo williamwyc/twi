@@ -90,7 +90,6 @@ router.get('/:username/posts',jsonParser,function(req,res){
     //     }
 
     // })
-    req.body.current_user = req.session.user
     request({  
         url: "http://192.168.122.28/"+req.params.username+'/posts',
         method: 'GET',

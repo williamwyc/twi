@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json()
 
 router.post('/',jsonParser,function(req,res){
+    req.session.user = req.cookies.session.user
     if(req.session.user == null){
         res.status(400).json({
             'status': 'error',

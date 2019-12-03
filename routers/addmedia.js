@@ -12,7 +12,7 @@ var request = require('request');
 var fs      = require('fs');
 
 router.post('/',upload.single('content'),function(req,res){
-    if(req.session.user == null){
+    if(req.cookies.session.user == null){
         res.status(400).json({
             'status':'error',
             'error':'User not login'
@@ -28,7 +28,7 @@ router.post('/',upload.single('content'),function(req,res){
         request({  
             url: "http://192.168.122.28/addmedia",
             method: 'POST',
-            formData : {"content":fs.createReadStream(req.file.path),"current_user": req.session.user},
+            formData : {"content":fs.createReadStream(req.file.path),"current_user": req.cookies.session.user},
             }, 
         function(err, response, body) {  
             if(err){

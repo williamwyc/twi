@@ -9,6 +9,7 @@ var nodemailer = require('nodemailer');
 
 router.post('/',jsonParser,function(req,res){
     req.session = null;
+    req.cookies.session = null
     res.status(200).json({'status':'OK'});
 })
 
