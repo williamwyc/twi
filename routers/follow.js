@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json()
+var cookieParser = require('cookie-parser');
 
 router.post('/',jsonParser,function(req,res){
     req.session.user = req.cookies.session.user

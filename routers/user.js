@@ -7,6 +7,7 @@ var jsonParser = bodyParser.json()
 var MongoClient = require('mongodb').MongoClient;
 var nodemailer = require('nodemailer');
 var request = require('request');
+var cookieParser = require('cookie-parser');
 
 
 //Gets user profile information for <username> (user doesn’t need to be signed in)

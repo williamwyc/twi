@@ -8,6 +8,7 @@ var multer = require('multer')
 var storage = multer.memoryStorage()
 var upload = multer({dest:'upload/',storage:storage})
 var request = require('request');
+var cookieParser = require('cookie-parser');
 
 router.get('/:id',multer().none(),function(req,res){
     // req.app.locals.client.execute('SELECT * FROM MEDIAS WHERE id = ?',[req.params.id],{prepare:true},function(err,result){

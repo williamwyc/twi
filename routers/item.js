@@ -5,6 +5,7 @@ var path = require('path');
 var urlencodedParser = bodyParser.urlencoded({extended: false})
 var jsonParser = bodyParser.json()
 var request = require('request');
+var cookieParser = require('cookie-parser');
 
 router.get('/:id',(req,res)=>{
     // getItem(req.params.id,req.app.locals.db,res);

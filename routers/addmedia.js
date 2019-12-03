@@ -10,6 +10,7 @@ var upload = multer({dest:'upload/'})
 var uniqid = require("uniqid");
 var request = require('request');
 var fs      = require('fs');
+var cookieParser = require('cookie-parser');
 
 router.post('/',upload.single('content'),function(req,res){
     if(req.cookies.session.user == null){
