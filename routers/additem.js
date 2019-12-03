@@ -55,7 +55,6 @@ router.post('/',(req,res)=>{
     //         addItem(req, res)
     //     }
     // }
-    console.log(req.cookie)
     console.log(req.cookies)
     req.body.current_user = req.cookies.session.user
     request({  
