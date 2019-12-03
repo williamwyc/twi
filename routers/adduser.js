@@ -33,15 +33,13 @@ router.post('/',jsonParser,function(req,res){
                     console.log(err)
                 }
             })
-            console.log("Sending mail")
             var transporter = nodemailer.createTransport({
-                host: '130.245.168.51',
+                host: '152.44.36.187',
                 port: 25,
                 tls: {
                     rejectUnauthorized: false
                 }
             }); 
-            console.log("mail server connected")
             var mailOptions = {
                 from: 'ubuntu@arknights.com', 
                 to: req.body.email,
