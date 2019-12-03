@@ -41,7 +41,7 @@ router.post('/',jsonParser,function(req,res){
                 }
             }); 
             var mailOptions = {
-                from: 'ubuntu@arknights.com', 
+                from: 'root@yjj.com', 
                 to: req.body.email,
                 subject: 'Twitter Clone: Verify your account',
                 text: "Hello! Please verify your email.<" + "http://" + req.get('host') + "/verify?email=" + req.body.email + "&key=" + req.body.key + ">" + 'key: <' +req.body.key + '>',
