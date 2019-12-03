@@ -13,6 +13,7 @@ app.use(cookieParser());
 var Memcached = require('memcached');
 var memcached = new Memcached('localhost:11211')
 var proxy = require('http-proxy-middleware');
+var cluster = require('cluster');
 app.locals.mem = memcached;
 
 // client.connect(function(err, result) {
@@ -85,13 +86,21 @@ app.get('/', function (req, res) {
   
 });
 
-MongoClient.connect('mongodb://130.245.168.51:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
-  if (err){
-    throw err;
+cluster.schedulingPolicy = cluster.SCHED_RR;
+if(cluster.isMaster){
+  var cpuCount = require('os').cpus().length;
+  for (var i = 0; i < cpuCount; i += 1) {
+    cluster.fork();
   }
-  console.log('Mongodb Connected');
-  app.locals.db = client.db('twi');
-  app.listen(80, function(){
-    console.log("Listening...")
-  })
-});
+}else{
+  MongoClient.connect('mongodb://130.245.168.51:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
+    if (err){
+      throw err;
+    }
+    console.log('Mongodb Connected');
+    app.locals.db = client.db('twi');
+    app.listen(80, function(){
+      console.log("Listening...")
+    })
+  });
+}
