@@ -38,7 +38,7 @@ router.get('/:id',multer().none(),function(req,res){
     //     }
     // })
     request({  
-        url: "http://192.168.122.32/media/"+req.params.id,
+        url: "http://152.44.32.147/media/"+req.params.id,
         method: 'GET',
         json: req.body
     }, 

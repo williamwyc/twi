@@ -10,7 +10,7 @@ var cookieParser = require('cookie-parser');
 router.get('/:id',(req,res)=>{
     // getItem(req.params.id,req.app.locals.db,res);
     request({  
-        url: "http://192.168.122.33/item/"+req.params.id,
+        url: "http://152.44.32.147/item/"+req.params.id,
         method: 'GET',
         json: req.body
     }, 
@@ -37,7 +37,7 @@ router.delete('/:id',(req,res)=>{
     else{
         req.body.current_user = req.cookies.a.user
         request({  
-            url: "http://192.168.122.33/item/"+req.params.id,
+            url: "http://152.44.32.147/item/"+req.params.id,
             method: 'DELETE',
             json: req.body
         }, 
@@ -67,7 +67,7 @@ router.post('/:id/like',(req,res)=>{
         }
         req.body.current_user = req.cookies.a.user
         request({  
-            url: "http://192.168.122.33/item/"+req.params.id+"/like",
+            url: "http://152.44.32.147/item/"+req.params.id+"/like",
             method: 'POST',
             json: req.body
         }, 

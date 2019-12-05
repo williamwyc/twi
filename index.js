@@ -67,8 +67,8 @@ app.use("/item", item)
 app.use("/search", search)
 app.use("/user",user)
 app.use("/follow",follow)
-app.use("/addmedia",proxy({target:'http://192.168.122.33',changeOrigin: false}))
-app.use("/media",proxy({target:'http://192.168.122.33',changeOrigin: false}))
+app.use("/addmedia",proxy({target:'http://152.44.32.147',changeOrigin: false}))
+app.use("/media",proxy({target:'http://152.44.32.147',changeOrigin: false}))
 app.use(express.static(__dirname));
 
 app.engine('html', require('ejs').renderFile);
@@ -93,7 +93,7 @@ if(cluster.isMaster){
     cluster.fork();
   }
 }else{
-  MongoClient.connect('mongodb://130.245.168.51:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
+  MongoClient.connect('mongodb://152.44.36.187:27017',{ useUnifiedTopology: true, useNewUrlParser: true },function(err,client){
     if (err){
       throw err;
     }

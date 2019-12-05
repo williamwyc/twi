@@ -76,7 +76,7 @@ router.post('/',(req,res)=>{
     else{
         req.body.current_user = req.cookies.a.user
         request({  
-            url: "http://192.168.122.33/additem",
+            url: "http://152.44.32.147/additem",
             method: 'POST',
             json: req.body
         }, 
